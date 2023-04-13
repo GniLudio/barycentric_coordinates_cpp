@@ -1,0 +1,9 @@
+# Build Ordner
+**/build/
+**/debug/
+**/out/
+
+# Versteckte Dateien (aber .gitignore behalten)
+.*
+!.gitignore
+
