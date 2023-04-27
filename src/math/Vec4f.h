@@ -6,8 +6,6 @@
 
 struct Vec4f
 {
-	/** Whether to print wrong usage of points or vectors. */
-	static constexpr bool STRICT_MODE = false;
 public:
 	/** The x component */
 	float x;
@@ -20,7 +18,6 @@ public:
 
 	/** The w component */
 	float w;
-
 public:
 	/**
      * Constructor.

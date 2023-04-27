@@ -140,7 +140,7 @@ float Vec4f::operator[](int i) const
 		case 1: return y;
 		case 2: return z;
 		case 3: return w;
-		default: 
+		default:
 			throw std::invalid_argument("'Vec4f.operator[] should only be called with the indices 0-3.");
 	}
 }
@@ -154,7 +154,7 @@ std::ostream& operator<<(std::ostream& os, Vec4f vector)
 
 void Vec4f::checkIsPoint(char* method) const
 {
-	if (STRICT_MODE && !isPoint())
+	if (!isPoint())
 	{
 		std::string message = std::string() + "'Vec4f." + method + "' should only be used on *points*.";
 		std::cerr << message << std::endl;
@@ -163,7 +163,7 @@ void Vec4f::checkIsPoint(char* method) const
 
 void Vec4f::checkIsVector(char* method) const
 {
-	if (STRICT_MODE && !isPoint())
+	if (!isVector())
 	{
 		std::string message = std::string() + "'Vec4f." + method + "' should only be used on *vectors*.";
 		std::cerr << message << std::endl;

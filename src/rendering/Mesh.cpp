@@ -11,10 +11,8 @@
 
 #include "tiny_obj_loader.h"
 
-std::vector<Triangle> loadObjectFile(const char* filePath);
-
-Mesh::Mesh(const std::vector<Triangle>& triangles)
-	: shader("simple.vert", "simple.frag"), numOfCopies(new int())
+Mesh::Mesh()
+	: shader("simple.vert", "simple.frag"), verticesNum(0), numOfCopies(new int())
 {
 	// creates the vao
 	glGenVertexArrays(1, &vao);
@@ -35,19 +33,19 @@ Mesh::Mesh(const std::vector<Triangle>& triangles)
 	glVertexAttribPointer(colorAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glEnableVertexAttribArray(colorAttr);
 
-	// upload data
-	verticesNum = static_cast<unsigned int>(3 * triangles.size());
-	glBufferData(GL_ARRAY_BUFFER, verticesNum * sizeof(Vertex), &triangles.front(), GL_STATIC_DRAW);
-
 	// Unbind the buffers
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
 }
 
-Mesh::Mesh(char* fileName, char* sourceDir)
-	: Mesh(loadObjectFile( (std::string(sourceDir) + fileName).c_str()))
+Mesh::Mesh(const std::vector<Triangle>& triangles) : Mesh()
 {
+	uploadData(triangles);
+}
+
+Mesh::Mesh(char* fileName, char* sourceDir) : Mesh()
+{
+	uploadData(fileName, sourceDir);
 }
 
 Mesh::Mesh(const Mesh& mesh)
@@ -72,15 +70,30 @@ Mesh::~Mesh()
 void Mesh::render(Mat4f modelMatrix) const
 {
 	shader.bind();
-
 	shader.setUniform("modelMatrix", modelMatrix);
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, verticesNum);
 }
 
-std::vector<Triangle> loadObjectFile(const char* filePath)
+void Mesh::uploadData(const std::vector<Triangle>& triangles)
 {
+	// binds the buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	// uploads the triangles
+	verticesNum = static_cast<unsigned int>(3 * triangles.size());
+	glBufferData(GL_ARRAY_BUFFER, verticesNum * sizeof(Vertex), &triangles.front(), GL_STATIC_DRAW);
+
+	// Unbind the buffers
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Mesh::uploadData(char* fileName, char* sourceDir)
+{
+	std::string filePath = std::string() + sourceDir + fileName;
+	std::cout << "File Path " << filePath << std::endl;
+
 	std::vector<Triangle> triangles;
 
 	// Define buffers to load the data:
@@ -92,29 +105,29 @@ std::vector<Triangle> loadObjectFile(const char* filePath)
 	std::string err;
 
 	// Try to load the obj file into
-	if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, filePath))
+	if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, filePath.c_str()))
 	{
 		std::cerr << "Obj-file " << filePath << " could not be loaded. Check if file is available." << std::endl;
-		return triangles;
+		return;
 	}
 
 	if (!warn.empty())
 	{
 		std::cout << "Warning while loaded obj-file " << filePath << ":" << std::endl;
 		std::cout << warn << std::endl;
-		return triangles;
+		return;
 	}
 	if (!err.empty())
 	{
 		std::cout << "Error while loaded obj-file " << filePath << ":" << std::endl;
 		std::cerr << err << std::endl;
-		return triangles;
+		return;
 	}
 
 	// Loop over shapes of the obj:
 	for (auto& shape : shapes)
 	{
-		// Loop over faces of that shapes:
+		// Loop over faces of that shape:
 		size_t index_offset = 0;
 		for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); f++)
 		{
@@ -145,8 +158,9 @@ std::vector<Triangle> loadObjectFile(const char* filePath)
 
 			// Generate normals:
 			{
-				Vec4f normal = (triangle[1].position - triangle[0].position).cross(
-					triangle[2].position - triangle[0].position).normalized();
+				Vec4f v1 = triangle[1].position - triangle[0].position;
+				Vec4f v2 = triangle[2].position - triangle[0].position;
+				Vec4f normal = v1.cross(v2).normalized();
 				for (int v = 0; v < fv; ++v)
 				{
 					triangle[v].normal = normal;
@@ -158,5 +172,7 @@ std::vector<Triangle> loadObjectFile(const char* filePath)
 			triangles.push_back(triangle);
 		}
 	}
-	return triangles;
+
+	// uploads the triangles
+	uploadData(triangles);
 }

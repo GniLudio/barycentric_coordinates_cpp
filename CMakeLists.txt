@@ -33,6 +33,8 @@ set (HEADERS
 	"src/window/Window.h"
 	# Utilities
 	"src/utilities/Colors.h"
+	"src/utilities/MouseMovement.h"
+	"src/utilities/UserInterface.h"
 	# Barycentric Coordinates
 	"src/barycentric_coordinates/BarycentricCoordinates.h"
 )
@@ -50,7 +52,7 @@ set (SOURCES
 	"src/rendering/CircleDrawer.cpp"
 	# Window
 	"src/window/Window.cpp" 
-)
+ "src/utilities/UserInterface.cpp")
 
 # Define shader & other resources
 set (RESOURCES

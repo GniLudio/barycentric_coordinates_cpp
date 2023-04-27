@@ -13,6 +13,7 @@ public:
 	Vec4f data[4];
 
 public:
+
 	/** The constructor */
 	Mat4f(Vec4f v1 = { 1,0,0,0 }, Vec4f v2 = { 0,1,0,0 }, Vec4f v3 = { 0,0,1,0 }, Vec4f v4 = {0,0,0,1});
 
