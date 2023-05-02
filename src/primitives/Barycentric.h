@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/Vec4f.h"
+
 struct Barycentric
 {
 	float alpha;

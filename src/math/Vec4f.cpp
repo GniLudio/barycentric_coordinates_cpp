@@ -95,7 +95,6 @@ Vec4f Vec4f::operator-() const
 
 Vec4f Vec4f::operator+(Vec4f v) const
 {
-	
 	if (isPoint() && v.isPoint())
 	{
 		std::string message = std::string() + "'Vec4f.operator+' shouldn't be used on two points.";

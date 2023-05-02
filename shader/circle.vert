@@ -1,6 +1,7 @@
 #version 330
 
 // The uniform variables
+uniform mat4 model_matrix;
 uniform vec2 window_size;
 
 // The input variables

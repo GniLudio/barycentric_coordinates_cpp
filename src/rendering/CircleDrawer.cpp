@@ -33,11 +33,14 @@ CircleDrawer::~CircleDrawer()
     glDeleteBuffers(1, &vbo);
 }
 
-void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Vec4f windowSize, bool filled, float edgeThickness) const
+void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, Vec4f windowSize, bool filled, float edgeThickness) const
 {
     shader.bind();
 
+    position = modelMatrix * position;
+
     // set the uniforms
+    shader.setUniform("model_matrix", modelMatrix);
     shader.setUniform("window_size", windowSize, 2);
     shader.setUniform("circle_position", position, 2);
     shader.setUniform("circle_radius", radius);

@@ -1,6 +1,7 @@
 #version 330
 
 // The uniform variables
+uniform mat4 model_matrix;
 uniform vec2 window_size;
 uniform vec2 circle_position;
 uniform float circle_radius;
@@ -18,7 +19,11 @@ void main()
 {
 	vec2 fragment_position = gl_FragCoord - window_size / 2;
 	float d = distance(circle_position, fragment_position);
-	if (d <= circle_radius && (circle_filled || (circle_radius - d) <= circle_edge_thickness)) {
+	
+	if (d<= circle_radius && ((circle_radius - d) <= circle_edge_thickness)) {
+		fragment_color = circle_color;
+	}
+	else if (d <= circle_radius && circle_filled) {
 		fragment_color = circle_color;
 	}
 }

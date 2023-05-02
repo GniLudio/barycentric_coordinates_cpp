@@ -4,6 +4,8 @@
 #define COMPARE_DELTA 0.0001f
 #include <ostream>
 
+#include "imgui.h"
+
 struct Vec4f
 {
 public:

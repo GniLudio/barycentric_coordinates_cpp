@@ -9,6 +9,8 @@
 struct Mat4f
 {
 public:
+	static int OUTPUT_DIMENSION;
+public:
 	/** The columns of this matrix. */
 	Vec4f data[4];
 
@@ -30,19 +32,31 @@ public:
 	/** Returns the multiplication with the given vector. */
 	Vec4f operator*(Vec4f vector) const;
 
+	Mat4f operator*(float scalar) const;
+
 	/** Returns a column of this matrix. */
 	Vec4f& operator[](int i);
 
 	/** Returns a column of this matrix. */
 	Vec4f operator[](int i) const;
 
+	/** Checks that the difference of each component is smaller or equal to 'COMPARE_DELTA'. */
+	bool operator==(Mat4f matrix) const;
+
+	/** Checks if at least one component has a higher difference than 'COMPARE_DELTA'. */
+	bool operator!=(Mat4f matrix) const;
 public:
 	/** Returns the determinante of this matrix. */
 	float determinante(int size = 3) const;
 
+	/** Returns the adjugate of this matrix. */
+	Mat4f adjugate() const;
+
 	/** Returns the inverse of this matrix. */
 	Mat4f inverse() const;
 
+	/** Returns the transpose of this matrix. */
+	Mat4f transpose() const;
 public:
 	/**
 	 * Adds the given Mat4f to an output stream.
