@@ -26,9 +26,10 @@ public:
 	 * @param title The window title.
 	 * @param width The initial window width.
 	 * @param height The initial window height.
-	 * @param imgui_style The ImGui style.
+	 * @param fontSize The font size.
+	 * @param imGuiStyle The ImGui style.
 	 */
-	Window(char* title, int width = 1280, int height = 720, float fontSize = 16.0f, ImGuiStyleFunction imgui_style = ImGui::StyleColorsClassic);
+	Window(char* title, int width = 1280, int height = 720, float fontSize = 16.0f, ImGuiStyleFunction imGuiStyle = ImGui::StyleColorsClassic);
 
 	/**
 	 * The destructor.

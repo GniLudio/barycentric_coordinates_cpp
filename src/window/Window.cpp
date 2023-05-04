@@ -6,7 +6,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFunction imgui_style)
+Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFunction imGuiStyle)
 {
 	// sets GLFW error callback
 	glfwSetErrorCallback([](int error, const char* description)
@@ -72,7 +72,7 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Setup ImGui style.
-	imgui_style(NULL);
+	imGuiStyle(NULL);
 
 	// Load Roboto Font:
 	io.Fonts->AddFontFromFileTTF((CMAKE_SOURCE_DIR "/lib/imgui-1.89.4/misc/fonts/Roboto-Medium.ttf"), fontSize);

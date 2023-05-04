@@ -17,6 +17,7 @@ public:
      * @param position The center position.
      * @param radius The radius.
      * @param color The color.
+     * @param modelMatrix The model matrix.
      * @param windowSize The window size.
      * @param filled Whether the circle is filled.
      * @param edgeThickness The edge thickness for non-filled circles.

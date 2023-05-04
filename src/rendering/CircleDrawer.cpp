@@ -37,8 +37,6 @@ void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMa
 {
     shader.bind();
 
-    position = modelMatrix * position;
-
     // set the uniforms
     shader.setUniform("model_matrix", modelMatrix);
     shader.setUniform("window_size", windowSize, 2);
@@ -50,12 +48,12 @@ void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMa
 
     // upload the data
     const Vec4f data[6] = {
-        position + Vec4f(-radius, -radius, 0, 0), // bottom left
-        position + Vec4f(-radius, radius,0,0), // top left
-        position + Vec4f(radius, radius, 0,0), // top right
-        position + Vec4f(-radius, -radius, 0,0), // bottom left
-        position + Vec4f(radius, radius,0,0), // top right
-        position + Vec4f(radius, -radius, 0,0), // bottom right
+        Vec4f(-radius, -radius, 0, 0), // bottom left
+        Vec4f(-radius, radius,0,0), // top left
+        Vec4f(radius, radius, 0,0), // top right
+        Vec4f(-radius, -radius, 0,0), // bottom left
+        Vec4f(radius, radius,0,0), // top right
+        Vec4f(radius, -radius, 0,0), // bottom right
     };
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);

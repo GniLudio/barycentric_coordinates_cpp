@@ -81,7 +81,7 @@ public:
 	static Mat4f scale(float scale);
 
 	/** Returns a transformation matrix which performs a scaling. */
-	static Mat4f scale(float xScale, float yScale, float zScale);
+	static Mat4f scale(float xScale, float yScale, float zScale = 1.f);
 
 	/** Returns a matrix which performs the perpective transformation. */
 	static Mat4f perspectiveTransformation(

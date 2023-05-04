@@ -163,7 +163,9 @@ void Shader::setUniform(char* name, float value) const
 
     // If the uniform variable exists, upload the float value to the GPU:
     if (loc != -1)
+    {
         glUniform1f(loc, value);
+    }
 
 }
 
