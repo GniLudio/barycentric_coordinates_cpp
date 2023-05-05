@@ -27,14 +27,14 @@ class BarycentricCoordinates : public Window
 
 	void Reset(void)
 	{
-		mouseMovement = Mat4f();
+		mouseMovement = Mat4f::scale(2);
 		triangle = Triangle(
-			Vertex({-0.5f, 0}, Colors::RED),
-			Vertex({0.5f, 0.5f}, Colors::GREEN),
-			Vertex({0.5f, -0.3f}, Colors::BLUE)
+			Vertex({-300, 0}, Colors::RED),
+			Vertex({400, 350}, Colors::GREEN),
+			Vertex({300, -300}, Colors::BLUE)
 		);
-		barycentric = Barycentric(1,0,0);
-		point = { 0, 0, 0,1 };
+		barycentric = Barycentric(1 / 3.f, 1 / 3.f, 1/3.f);
+		UpdatePoint();
 	}
 public:
 	BarycentricCoordinates(int width = 1280, int height = 720, float fontSize = 16.0f, ImGuiStyleFunction imguiStyle = ImGui::StyleColorsClassic)
@@ -47,20 +47,14 @@ public:
 	{
 		// preparations
 		Vec4f windowSize = { (float)getWidth(), (float)getHeight(), (getWidth() + getHeight()) / 2.f};
-		Mat4f iWindowMat = Mat4f::scale(windowSize.x, windowSize.y, windowSize.y).inverse();
+		Mat4f iWindowMat = Mat4f::scale(windowSize.x, windowSize.y, windowSize.y).inverse() * 2;
+		Mat4f modelMatrix = mouseMovement * iWindowMat;
 
 		// clears the color
 		glClearColor(0, 0, 0, 1.f);
 
 		// mouse movement
-		if (!ImGui::IsKeyDown(ImGuiKey_LeftShift))
-		{
-			Utilities::ApplyMouseMovement(mouseMovement, ImGuiMouseButton_Left);
-		} else
-		{
-			Vec4f* points[2] = {&point};
-			Utilities::MoveWithMouse(points, 2, mouseMovement, ImGuiMouseButton_Left, currently_dragging);
-		}
+		Utilities::ApplyMouseMovement(mouseMovement, ImGuiMouseButton_Left);
 
 
 		// settings window
@@ -85,15 +79,18 @@ public:
 			}
 		}
 		*/
+		ImGui::BeginDisabled();
+		UserInterface::DragMat4f(mouseMovement, "Mouse Movement");
+		ImGui::EndDisabled();
 		UserInterface::DragVec4f(point, "P");
 		if (ImGui::Button("Reset")) Reset();
 		ImGui::End();
 
 		// draw the image
 		Mesh mesh = Mesh({ triangle });
-		//mesh.render(mouseMovement);
+		mesh.render(modelMatrix);
 		CircleDrawer circleDrawer;
-		circleDrawer.draw( point, 360, Colors::RED, mouseMovement, windowSize);
+		circleDrawer.draw( point, 50, Colors::RED, mouseMovement, windowSize);
 	}
 private:
 	void UpdatePoint(void)

@@ -18,7 +18,7 @@ CircleDrawer::CircleDrawer()
     GLint positionAttr = glGetAttribLocation(shader.shaderProgram, "position");
 
     // Link the VBO to the VAO:
-    glVertexAttribPointer(positionAttr, 2, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
     glEnableVertexAttribArray(positionAttr);
 
     // Unbind the buffers:
@@ -39,8 +39,8 @@ void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMa
 
     // set the uniforms
     shader.setUniform("model_matrix", modelMatrix);
-    shader.setUniform("window_size", windowSize, 2);
-    shader.setUniform("circle_position", position, 2);
+    shader.setUniform("window_size", windowSize, 4);
+    shader.setUniform("circle_position", position, 4);
     shader.setUniform("circle_radius", radius);
     shader.setUniform("circle_color", color);
     shader.setUniform("circle_filled", filled);
