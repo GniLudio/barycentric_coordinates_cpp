@@ -21,19 +21,20 @@ class BarycentricCoordinates : public Window
 
 	Triangle triangle;
 	Barycentric barycentric;
-	Vec4f point;
+	Vec4f point, pointColor;
 
 	int currently_dragging = -1;
 
 	void Reset(void)
 	{
-		mouseMovement = Mat4f::scale(2);
+		mouseMovement = Mat4f();
 		triangle = Triangle(
 			Vertex({-300, 0}, Colors::RED),
 			Vertex({400, 350}, Colors::GREEN),
 			Vertex({300, -300}, Colors::BLUE)
 		);
 		barycentric = Barycentric(1 / 3.f, 1 / 3.f, 1/3.f);
+		pointColor = Colors::WHITE;
 		UpdatePoint();
 	}
 public:
@@ -47,25 +48,42 @@ public:
 	{
 		// preparations
 		Vec4f windowSize = { (float)getWidth(), (float)getHeight(), (getWidth() + getHeight()) / 2.f};
-		Mat4f iWindowMat = Mat4f::scale(windowSize.x, windowSize.y, windowSize.y).inverse() * 2;
+		Mat4f iWindowMat = Mat4f::scale(2 / windowSize.x, 2 / windowSize.y, 1 / (windowSize.x + windowSize.y));
 		Mat4f modelMatrix = mouseMovement * iWindowMat;
 
 		// clears the color
 		glClearColor(0, 0, 0, 1.f);
 
 		// mouse movement
-		Utilities::ApplyMouseMovement(mouseMovement, ImGuiMouseButton_Left);
+		if (!ImGui::IsKeyDown(ImGuiKey_LeftShift))
+		{
+			Vec4f* points[4] = {&triangle[0].position, &triangle[1].position, &triangle[2].position, &point};
+			if (Utilities::MoveWithMouse(points, 4, mouseMovement, ImGuiMouseButton_Left, currently_dragging))
+			{
+				switch (currently_dragging)
+				{
+				case 0:
+				case 1:
+				case 2:
+					UpdatePoint();
+				case 3:
+					UpdateBarycentric();
+				}
+			}
+		} else
+		{
+			Utilities::ApplyMouseMovement(mouseMovement, ImGuiMouseButton_Left);
+		}
 
 
 		// settings window
 		UserInterface::BeginSettingsMenu(*this);
-		/*
 		if (UserInterface::AddCollapsingHeader("Triangle"))
 		{
 			char* labels[3] = { "A", "B", "C" };
 			for (int i=0; i<3; i++)
 			{
-				if (UserInterface::DragVec4f(triangle[i].position, labels[i]))
+				if (UserInterface::DragVec(&triangle[i].position[0], labels[i]))
 					UpdatePoint();
 			}
 		}
@@ -77,20 +95,41 @@ public:
 				if (ImGui::DragFloat( labels[i], &barycentric[i], 0.01f))
 					UpdatePoint();
 			}
+			if (UserInterface::DragVec(&point[0], "Point"))
+				UpdateBarycentric();
 		}
-		*/
-		ImGui::BeginDisabled();
-		UserInterface::DragMat4f(mouseMovement, "Mouse Movement");
-		ImGui::EndDisabled();
-		UserInterface::DragVec4f(point, "P");
+		if (UserInterface::AddCollapsingHeader("Colors"))
+		{
+			char* labels[3] = { "A", "B", "C" };
+			for (int i = 0; i < 3; i++)
+			{
+				if (UserInterface::DragColor(&triangle[i].color[0], labels[i]))
+					UpdatePoint();
+			}
+			UserInterface::DragColor(&pointColor[0], "Point");
+		}
 		if (ImGui::Button("Reset")) Reset();
+		if (ImGui::Button("Reset Mouse Movement")) mouseMovement = Mat4f();
+		ImGui::End();
+
+
+		// info menu
+		UserInterface::BeginInfoMenu(*this);
+		ImGui::BeginDisabled();
+		UserInterface::DragVec(&barycentric[0], "Barycentric");
+		ImGui::EndDisabled();
 		ImGui::End();
 
 		// draw the image
 		Mesh mesh = Mesh({ triangle });
 		mesh.render(modelMatrix);
 		CircleDrawer circleDrawer;
-		circleDrawer.draw( point, 50, Colors::RED, mouseMovement, windowSize);
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+		{
+			Vec4f mousePos = Utilities::GetMousePosition();
+			point = mouseMovement.inverse() * mousePos;
+		}
+		circleDrawer.draw( point, 5, pointColor, modelMatrix);
 	}
 private:
 	void UpdatePoint(void)
@@ -98,6 +137,11 @@ private:
 		point = triangle[0].position * barycentric[0]
 			+ (triangle[1].position * barycentric[1]).toVector()
 			+ (triangle[2].position * barycentric[2]).toVector();
+	}
+
+	void UpdateBarycentric(void)
+	{
+		barycentric = Barycentric(triangle[0].position, triangle[1].position, triangle[2].position, point);
 	}
 };
 

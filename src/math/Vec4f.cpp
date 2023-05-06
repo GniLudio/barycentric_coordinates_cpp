@@ -24,23 +24,38 @@ Vec4f Vec4f::toVector() const
 	return *this - Vec4f();
 }
 
-float Vec4f::length() const
+float Vec4f::length(int dimensions) const
 {
+	if (dimensions < 1 || dimensions > 3)
+		throw std::invalid_argument("Vec4f.length should be called with dimensions between 1-3");
 	checkIsVector("length");
-	return std::sqrt(x * x + y * y + z * z);
+	float l = 0;
+	for (int i=0; i<dimensions; i++)
+	{
+		l += (*this)[i] * (*this)[i];
+	}
+	l = std::sqrt(l);
+	return l;
 }
 
-float Vec4f::squaredLength() const
+float Vec4f::squaredLength(int dimensions) const
 {
+	if (dimensions < 1 || dimensions > 3)
+		throw std::invalid_argument("Vec4f.squaredLength should be called with dimensions between 1-3");
 	checkIsVector("squaredLength");
-	return x * x + y * y + z * z;
+	float l = 0;
+	for (int i = 0; i < dimensions; i++)
+	{
+		l += (*this)[i] * (*this)[i];
+	}
+	return l;
 }
 
-float Vec4f::distanceTo(Vec4f p) const
+float Vec4f::distanceTo(Vec4f p, int dimensions) const
 {
 	checkIsPoint("distanceTo");
 	p.checkIsPoint("distanceTo");
-	return (*this - p).length();
+	return (*this - p).length(dimensions);
 }
 
 float Vec4f::dot(Vec4f v) const

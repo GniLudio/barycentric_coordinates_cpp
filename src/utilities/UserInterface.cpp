@@ -36,27 +36,27 @@ void UserInterface::AddText(const char* text, Vec4f pos, const Window& window)
 {
 }
 
-bool UserInterface::DragVec4f(Vec4f& v, const char* label, int depth, float v_speed, float v_min, float v_max,
+bool UserInterface::DragVec(float* v, const char* label, int depth, float v_speed, float v_min, float v_max,
 	const char* format, ImGuiSliderFlags flags)
 {
 	if (depth == 2)
-		return ImGui::DragFloat2(label, &v.x, v_speed, v_min, v_max, format, flags);
+		return ImGui::DragFloat2(label, v, v_speed, v_min, v_max, format, flags);
 	else if (depth == 3)
-		return ImGui::DragFloat3(label, &v.x, v_speed, v_min, v_max, format, flags);
+		return ImGui::DragFloat3(label, v, v_speed, v_min, v_max, format, flags);
 	else if (depth == 4)
-		return ImGui::DragFloat4(label, &v.x, v_speed, v_min, v_max, format, flags);
+		return ImGui::DragFloat4(label, v, v_speed, v_min, v_max, format, flags);
 	else
-		throw std::invalid_argument("UserInterface::DragVec4f can only be called with depth between 2-4.");
+		throw std::invalid_argument("UserInterface::DragVec can only be called with depth between 2-4.");
 
 }
 
-bool UserInterface::DragColor(Vec4f& color, const char* label, bool alpha)
+bool UserInterface::DragColor(float* color, const char* label, bool alpha)
 {
-	if (alpha) return ImGui::ColorEdit4(label, &color[0]);
-	return ImGui::ColorEdit3(label, &color[0]);
+	if (alpha) return ImGui::ColorEdit4(label, color);
+	return ImGui::ColorEdit3(label, color);
 }
 
-bool UserInterface::DragMat4f(Mat4f& m, const char* label, int depth, bool disabled, float v_speed, float v_min,
+bool UserInterface::DragMat(float* m, const char* label, int depth, bool disabled, float v_speed, float v_min,
 	float v_max, const char* format, ImGuiSliderFlags flags)
 {
 	const float total_width = 380.f;
@@ -70,7 +70,7 @@ bool UserInterface::DragMat4f(Mat4f& m, const char* label, int depth, bool disab
 		for (int y = 0; y < depth; y++) {
 			for (int x = 0; x < depth; x++) {
 				std::string s = "##" + std::to_string(y) + "x" + std::to_string(x);
-				edited |= ImGui::DragFloat(s.c_str(), &m[x][y], v_speed, v_min, v_max, format, flags);
+				edited |= ImGui::DragFloat(s.c_str(), &m[x*4 + y], v_speed, v_min, v_max, format, flags);
 				if (x != depth - 1) {
 					ImGui::SameLine();
 					ImGui::Dummy(ImVec2(-15.f + dummy_width, 0));

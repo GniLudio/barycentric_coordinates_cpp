@@ -15,11 +15,11 @@ CircleDrawer::CircleDrawer()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     // get the attribute handles
-    GLint positionAttr = glGetAttribLocation(shader.shaderProgram, "position");
+    GLint offsetAttr = glGetAttribLocation(shader.shaderProgram, "offset");
 
     // Link the VBO to the VAO:
-    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
-    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(offsetAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
+    glEnableVertexAttribArray(offsetAttr);
 
     // Unbind the buffers:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -33,13 +33,12 @@ CircleDrawer::~CircleDrawer()
     glDeleteBuffers(1, &vbo);
 }
 
-void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, Vec4f windowSize, bool filled, float edgeThickness) const
+void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, bool filled, float edgeThickness) const
 {
     shader.bind();
 
     // set the uniforms
     shader.setUniform("model_matrix", modelMatrix);
-    shader.setUniform("window_size", windowSize, 4);
     shader.setUniform("circle_position", position, 4);
     shader.setUniform("circle_radius", radius);
     shader.setUniform("circle_color", color);

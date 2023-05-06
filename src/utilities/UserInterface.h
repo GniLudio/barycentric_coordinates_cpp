@@ -27,20 +27,20 @@ namespace UserInterface
 	void AddText(const char* text, Vec4f pos, const Window& window);
 
 	/**
-	 * 
+	 * Displays a vector with imgui.
 	 */
-	bool DragVec4f(Vec4f& v, const char* label, int depth = 3,
+	bool DragVec(float* v, const char* label, int depth = 3,
 		float v_speed = (1.0f), float v_min = (0.0f), float v_max = (0.0f), const char* format = "%.3f", ImGuiSliderFlags flags = 0);
 
 	/**
-	 *
+	 * Displays a color with imgui.
 	 */
-	bool DragColor(Vec4f& color, const char* label, bool alpha = false);
+	bool DragColor(float* color, const char* label, bool alpha = false);
 
 	/**
-	 *
+	 * Displays a matrix with imgui.
 	 */
-	bool DragMat4f(Mat4f& m, const char* label, int depth = 4, bool disabled = false, float v_speed = (1.0f),
+	bool DragMat(float* m, const char* label, int depth = 4, bool disabled = false, float v_speed = (1.0f),
 		float v_min = (0.0f), float v_max = (0.0f), const char* format = "%.3f", ImGuiSliderFlags flags = 0);
 
 }

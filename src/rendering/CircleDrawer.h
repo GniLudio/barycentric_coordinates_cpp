@@ -18,11 +18,10 @@ public:
      * @param radius The radius.
      * @param color The color.
      * @param modelMatrix The model matrix.
-     * @param windowSize The window size.
      * @param filled Whether the circle is filled.
      * @param edgeThickness The edge thickness for non-filled circles.
      */
-    void draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, Vec4f windowSize, bool filled = true, float edgeThickness = 1) const;
+    void draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, bool filled = true, float edgeThickness = 1) const;
 private:
     // Pointer to Vertex Array Object (on GPU):
     GLuint vao = 0;

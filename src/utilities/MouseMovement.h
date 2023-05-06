@@ -47,6 +47,19 @@ namespace Utilities
 		return {imMousePos.x, imMousePos.y, 0};
 	}
 
+	inline int FindNearest(Vec4f* points[], int pointCount, Vec4f pos)
+	{
+		int iNearest = 0;
+		for (int i=1; i<pointCount; i++)
+		{
+			if (points[i]->distanceTo(pos) < points[iNearest]->distanceTo(pos))
+			{
+				iNearest = i;
+			}
+		}
+		return iNearest;
+	}
+
 	/**
 	 * Mouses the nearest point with the mouse.
 	 *
@@ -61,19 +74,14 @@ namespace Utilities
 		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
 		{
 			// gets the current mouse position
+			// TODO: project mouse position onto plane
 			Vec4f mousePos = modelMatrix.inverse() * GetMousePosition();
+
 			// if no point is being dragged already
 			if (currently_dragging == -1)
 			{
 				// find the nearest point
-				currently_dragging = 0;
-				for (int i=1; i<pointCount; i++)
-				{
-					if ((*points[i]).distanceTo(mousePos) < (*points[currently_dragging]).distanceTo(mousePos))
-					{
-						currently_dragging = i;
-					}
-				}
+				currently_dragging = FindNearest(points, pointCount, mousePos);
 			}
 			// updates the point position
 			*points[currently_dragging] = mousePos;
@@ -82,6 +90,8 @@ namespace Utilities
 		currently_dragging = -1;
 		return false;
 	}
+
+
 
 
 }

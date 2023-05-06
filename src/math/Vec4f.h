@@ -45,13 +45,13 @@ public:
 
 public:
 	/** Returns the length of the *vector*. */
-	float length(void) const;
+	float length(int dimensions = 3) const;
 
 	/** Returns the squared length of the *vector*. */
-	float squaredLength(void) const;
+	float squaredLength(int dimensions = 3) const;
 
 	/** Returns the Euclidian distance from the *p* to the given *p*. */
-	float distanceTo(Vec4f p) const;
+	float distanceTo(Vec4f p, int dimensions = 3) const;
 
 	/** Returns the dot product of this *v* with the given *v*. */
 	float dot(Vec4f v) const;

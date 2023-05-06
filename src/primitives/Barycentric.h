@@ -1,5 +1,6 @@
 #pragma once
 
+#include "math/Mat4f.h"
 #include "math/Vec4f.h"
 
 struct Barycentric
@@ -16,7 +17,17 @@ struct Barycentric
 	Barycentric(Vec4f a, Vec4f b, Vec4f c, Vec4f p)
 		: alpha(-1), beta(-1), gamma(-1)
 	{
-		// TODO: Calculate the barycentric coordinates of point p in the triangle 
+		Vec4f abc[3] = {a,b,c};
+		float f = calculateArea(abc);
+		Vec4f triangles[3][3] = {
+			{p, b, c},
+			{p, c, a},
+			{p, a, b}
+		};
+		for (int i=0; i<3; i++)
+		{
+			(*this)[i] = calculateArea(triangles[i]) / f;
+		}
 	}
 
 	float& operator[](int i) {
@@ -44,5 +55,16 @@ struct Barycentric
 	{
 		os << "B(" << barycentric.alpha << ", " << barycentric.beta << ", " << barycentric.gamma << ")";
 		return os;
+	}
+
+private:
+	static float calculateArea(Vec4f points[3])
+	{
+		Vec4f A = points[0], B = points[1], C = points[2];
+		return 0.5f * Mat4f(
+			{A.x, B.x, C.x},
+			{A.y, B.y, C.y},
+			{1,1,1}
+		).transpose().determinante(3);
 	}
 };
