@@ -1,8 +1,6 @@
 
 #include "CircleDrawer.h"
 
-#include <iostream>
-
 CircleDrawer::CircleDrawer()
 	: shader("circle.vert", "circle.frag")
 {

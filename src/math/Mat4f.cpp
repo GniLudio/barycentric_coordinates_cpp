@@ -5,8 +5,6 @@
 #include <iostream>
 #include <math.h>
 
-int Mat4f::OUTPUT_DIMENSION = 4;
-
 Mat4f::Mat4f(Vec4f v1, Vec4f v2, Vec4f v3, Vec4f v4) : data{v1, v2, v3, v4}
 {
 }
@@ -190,19 +188,24 @@ Mat4f Mat4f::transpose() const
 
 std::ostream& operator<<(std::ostream& os, Mat4f matrix)
 {
-	for (int y = 0; y < Mat4f::OUTPUT_DIMENSION; ++y)
+	for (int y = 0; y < 4; ++y)
 	{
-		for (int x = 0; x < Mat4f::OUTPUT_DIMENSION; ++x)
+		for (int x = 0; x < 4; ++x)
 		{
 			float number = matrix[x][y];
+			bool pretty = false;
 			if (std::abs(number) < COMPARE_DELTA)
 			{
+				pretty = true;
 				number = 0;
 			}
 			else if (std::abs(1 - number) < COMPARE_DELTA)
+			{
+				pretty = true;
 				number = 1;
+			}
 
-			if (number != matrix[x][y])
+			if (pretty)
 				os << std::left << "~" << std::setw(6) << std::setprecision(3) << number << std::setfill(' ');
 			else 
 				os << std::left << std::setw(7) << std::setprecision(3) << number << std::setfill(' ');
@@ -248,6 +251,11 @@ Mat4f Mat4f::rotationZ(float angle)
 	result[0][1] = std::sinf(angle);
 	result[1][1] = std::cosf(angle);
 	return result;
+}
+
+Mat4f Mat4f::rotation(float angleX, float angleY, float angleZ)
+{
+	return rotationZ(angleZ) * rotationY(angleY) * rotationX(angleX);
 }
 
 Mat4f Mat4f::scale(float scale)

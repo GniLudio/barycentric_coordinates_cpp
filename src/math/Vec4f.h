@@ -60,7 +60,10 @@ public:
 	Vec4f cross(Vec4f v) const;
 
 	/** Returns the normalized vector of this *vector*. */
-	Vec4f normalized(void) const;
+	Vec4f normalized(int dimensions = 3) const;
+
+	/** Returns the closest point from a point to this *vector*. */
+	Vec4f closest(Vec4f start, Vec4f point);
 
 public:
 	/** Checks that the difference of each component is smaller or equal to 'COMPARE_DELTA'. */

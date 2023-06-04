@@ -9,8 +9,6 @@
 struct Mat4f
 {
 public:
-	static int OUTPUT_DIMENSION;
-public:
 	/** The columns of this matrix. */
 	Vec4f data[4];
 
@@ -76,6 +74,9 @@ public:
 
 	/** Returns a transformation matrix which performs a rotation around the y axis. */
 	static Mat4f rotationZ(float angle);
+
+	/** Returns a transformation matrix with performs a rotation. */
+	static Mat4f rotation(float angleX = 0.f, float angleY = 0.f, float angleZ = 0.f);
 
 	/** Returns a transformation matrix which performs a uniform scaling. */
 	static Mat4f scale(float scale);

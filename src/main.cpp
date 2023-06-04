@@ -2,11 +2,11 @@
 
 #include "barycentric_coordinates/BarycentricCoordinates.h"
 
-int main(int, char**)
+int main(int argc, char** argv)
 {
 	try
 	{
-		BarycentricCoordinates(1280, 720, 16.0f, ImGui::StyleColorsClassic).Start();
+		BarycentricCoordinates(1600, 900, 24.0f, ImGui::StyleColorsLight).Start();
 	}
 	catch (const std::exception& e)
 	{
@@ -16,4 +16,9 @@ int main(int, char**)
 
 
 	return 0;
+}
+
+int WinMain(int argc, char** argv)
+{
+	main(argc, argv);
 }

@@ -6,6 +6,9 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFunction imGuiStyle)
 {
 	// sets GLFW error callback
@@ -76,6 +79,12 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 
 	// Load Roboto Font:
 	io.Fonts->AddFontFromFileTTF((CMAKE_SOURCE_DIR "/lib/imgui-1.89.4/misc/fonts/Roboto-Medium.ttf"), fontSize);
+
+	// Window Icon
+	GLFWimage images[1];
+	images[0].pixels = stbi_load(CMAKE_SOURCE_DIR"/images/icon.png", &images[0].width, &images[0].height, NULL, 4); //rgba channels 
+	glfwSetWindowIcon(window, 1, images);
+	stbi_image_free(images[0].pixels);
 }
 
 Window::~Window()

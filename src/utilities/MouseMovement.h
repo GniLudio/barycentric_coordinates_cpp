@@ -47,17 +47,23 @@ namespace Utilities
 		return {imMousePos.x, imMousePos.y, 0};
 	}
 
-	inline int FindNearest(Vec4f* points[], int pointCount, Vec4f pos)
+	inline int FindNearest(Vec4f* points[], int pointCount, Vec4f pos, int dimensions)
 	{
-		int iNearest = 0;
-		for (int i=1; i<pointCount; i++)
+		int iNearest = pointCount-1;
+		for (int i=pointCount-2; i>=0; i--)
 		{
-			if (points[i]->distanceTo(pos) < points[iNearest]->distanceTo(pos))
+			if (points[i]->distanceTo(pos, dimensions) < points[iNearest]->distanceTo(pos, dimensions))
 			{
 				iNearest = i;
 			}
 		}
 		return iNearest;
+	}
+
+	inline Vec4f IntersectPlane(Vec4f p0, Vec4f d, Vec4f n, Vec4f c)
+	{
+		float t = (n.dot(c.toVector()) - n.dot(p0.toVector())) / (n.dot(d));
+		return p0 + d * t;
 	}
 
 	/**
@@ -73,23 +79,32 @@ namespace Utilities
 	{
 		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
 		{
-			// gets the current mouse position
-			// TODO: project mouse position onto plane
 			Vec4f mousePos = modelMatrix.inverse() * GetMousePosition();
-
-			// if no point is being dragged already
+			mousePos = IntersectPlane(
+				mousePos, 
+				modelMatrix.inverse() * Vec4f(0, 0, 1, 0), 
+				Vec4f(0, 0, -1, 0), 
+				Vec4f()
+			);
 			if (currently_dragging == -1)
 			{
-				// find the nearest point
-				currently_dragging = FindNearest(points, pointCount, mousePos);
+				currently_dragging = FindNearest(points, pointCount, mousePos, 3);
 			}
-			// updates the point position
 			*points[currently_dragging] = mousePos;
 			return true;
 		}
 		currently_dragging = -1;
 		return false;
 	}
+
+	/**
+	 * \brief Projects a points onto a plane.
+	 * \param p0 The original point.
+	 * \param d The direction onto the plane.
+	 * \param n The normal of the plane.
+	 * \param c A point on the plane.
+	 * \return The projected point.
+	 */
 
 
 

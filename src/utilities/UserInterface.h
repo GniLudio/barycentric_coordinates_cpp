@@ -24,7 +24,7 @@ namespace UserInterface
 	/**
 	 * Adds text at the position.
 	 */
-	void AddText(const char* text, Vec4f pos, const Window& window);
+	void AddText(const char* text, Vec4f pos, Mat4f modelMatrix, const Window& window);
 
 	/**
 	 * Displays a vector with imgui.

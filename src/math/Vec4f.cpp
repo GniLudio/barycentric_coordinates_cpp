@@ -77,10 +77,24 @@ Vec4f Vec4f::cross(Vec4f v) const
 	};
 }
 
-Vec4f Vec4f::normalized() const
+Vec4f Vec4f::normalized(int dimensions) const
 {
 	checkIsVector("normalized");
-	return *this / length();
+	return *this / length(dimensions);
+}
+
+Vec4f Vec4f::closest(Vec4f start, Vec4f point)
+{
+	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter1/closest_point_on_line.html
+
+	checkIsVector("closest");
+	start.checkIsPoint("closest");
+	point.checkIsPoint("closest");
+
+	float t = (point-start).dot(*this) / this->dot(*this);
+	t = std::max(0.f, std::min(t, 1.f));
+
+	return start + *this * t;
 }
 
 bool Vec4f::operator==(Vec4f v) const

@@ -1,6 +1,7 @@
 #include "UserInterface.h"
 
 #include <string>
+#include <iostream>
 
 void UserInterface::BeginInfoMenu(const Window& window, float uiMargin)
 {
@@ -32,22 +33,37 @@ bool UserInterface::AddCollapsingHeader(const char* title)
 	);
 }
 
-void UserInterface::AddText(const char* text, Vec4f pos, const Window& window)
+void UserInterface::AddText(const char* text, Vec4f pos, Mat4f modelMatrix, const Window& window)
 {
+	pos = modelMatrix * pos;
+	ImGui::SetNextWindowPos(ImVec2(pos.x + window.getWidth() / 2.0f, -pos.y + window.getHeight() / 2.f), 0, ImVec2(0.5f, 0.5f));
+	ImGui::Begin(text, nullptr,
+		ImGuiWindowFlags_NoNav |
+		ImGuiWindowFlags_NoDecoration |
+		ImGuiWindowFlags_NoInputs |
+		ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoBackground
+	);
+	ImGui::BeginDisabled();
+	ImGui::TextColored(ImVec4(1,1,1,1),text);
+	ImGui::EndDisabled();
+	ImGui::End();
+
 }
 
 bool UserInterface::DragVec(float* v, const char* label, int depth, float v_speed, float v_min, float v_max,
 	const char* format, ImGuiSliderFlags flags)
 {
+	bool changed;
 	if (depth == 2)
-		return ImGui::DragFloat2(label, v, v_speed, v_min, v_max, format, flags);
+		changed = ImGui::DragFloat2(label, v, v_speed, v_min, v_max, format, flags);
 	else if (depth == 3)
-		return ImGui::DragFloat3(label, v, v_speed, v_min, v_max, format, flags);
+		changed = ImGui::DragFloat3(label, v, v_speed, v_min, v_max, format, flags);
 	else if (depth == 4)
-		return ImGui::DragFloat4(label, v, v_speed, v_min, v_max, format, flags);
+		changed = ImGui::DragFloat4(label, v, v_speed, v_min, v_max, format, flags);
 	else
 		throw std::invalid_argument("UserInterface::DragVec can only be called with depth between 2-4.");
-
+	return changed;
 }
 
 bool UserInterface::DragColor(float* color, const char* label, bool alpha)

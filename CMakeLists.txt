@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD 11)
 # Automically include generated files
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
 add_subdirectory(lib/imgui-1.89.4/)
 add_subdirectory(lib/glad/)
 
@@ -52,7 +51,8 @@ set (SOURCES
 	"src/rendering/CircleDrawer.cpp"
 	# Window
 	"src/window/Window.cpp" 
- "src/utilities/UserInterface.cpp")
+	"src/utilities/UserInterface.cpp"
+)
 
 # Define shader & other resources
 set (RESOURCES
@@ -66,10 +66,15 @@ set (RESOURCES
 include_directories(
 	"src"
 	"lib/tiny_obj_loader"
+	"lib/stb"
 )
 
 # Define the executable
 add_executable(Computergraphik ${SOURCES} ${HEADERS} ${RESOURCES})
+#add_executable(Computergraphik WIN32 ${SOURCES} ${HEADERS} ${RESOURCES})
+#add_executable(Computergraphik MACOSX_BUNDLE ${SOURCES} ${HEADERS} ${RESOURCES})
+
+set_target_properties(Computergraphik PROPERTIES LINK_FLAGS "-mwindows")
 
 # IMGUI specific compile definition:
 target_compile_definitions(Computergraphik PUBLIC -DCMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
