@@ -7,8 +7,8 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		//BarycentricCoordinates(1600, 900, 24.0f, ImGui::StyleColorsLight).Start();
-		FlickerFusion(1600, 900, 24.0f, ImGui::StyleColorsLight).Start();
+		BarycentricCoordinates(1600, 900, 24.0f, ImGui::StyleColorsLight).Start();
+		//FlickerFusion(1600, 900, 24.0f, ImGui::StyleColorsLight).Start();
 	}
 	catch (const std::exception& e)
 	{
