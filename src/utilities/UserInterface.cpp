@@ -75,12 +75,14 @@ bool UserInterface::DragColor(float* color, const char* label, bool alpha)
 bool UserInterface::DragMat(float* m, const char* label, int depth, bool disabled, float v_speed, float v_min,
 	float v_max, const char* format, ImGuiSliderFlags flags)
 {
-	const float total_width = 380.f;
-	const float dummy_width = 5;
-	const float total_dummy_width = dummy_width * (depth - 1);
-	const float drag_width = (total_width - total_dummy_width) / depth;
+
 	bool edited = false;
 	if (AddCollapsingHeader(label)) {
+		ImGui::Indent();
+		const float total_width = ImGui::GetColumnWidth();
+		const float dummy_width = 5;
+		const float total_dummy_width = dummy_width * (depth - 1);
+		const float drag_width = (total_width - total_dummy_width) / depth;
 		if (disabled) ImGui::BeginDisabled();
 		ImGui::PushItemWidth(drag_width);
 		for (int y = 0; y < depth; y++) {
@@ -96,7 +98,20 @@ bool UserInterface::DragMat(float* m, const char* label, int depth, bool disable
 		}
 		ImGui::PopItemWidth();
 		if (disabled) ImGui::EndDisabled();
+		ImGui::Unindent();
 	}
 	return edited;
 
+}
+
+bool UserInterface::AddTooltip(const char* text, ImVec4 color)
+{
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::TextColored(color, text);
+		ImGui::EndTooltip();
+		return true;
+	}
+	return false;
 }

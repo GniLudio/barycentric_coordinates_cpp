@@ -43,4 +43,12 @@ namespace UserInterface
 	bool DragMat(float* m, const char* label, int depth = 4, bool disabled = false, float v_speed = (1.0f),
 		float v_min = (0.0f), float v_max = (0.0f), const char* format = "%.3f", ImGuiSliderFlags flags = 0);
 
+	/**
+	 * \brief Adds a tooltip when hovering over the last widget.
+	 * \param text The text.
+	 * \param color The text color.
+	 * \return Whether the tooltip was displayed.
+	 */
+	bool AddTooltip(const char* text, ImVec4 color = ImVec4(0.5f, 0.5f, 0.5f, 1));
+
 }

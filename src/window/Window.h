@@ -17,11 +17,6 @@ class Window
 {
 public:
 	/**
-	 * The GLFW window.
-	 */
-	GLFWwindow* window;
-
-	/**
 	 * The constructor.
 	 * @param title The window title.
 	 * @param width The initial window width.
@@ -41,6 +36,12 @@ public:
 	 */
 	void Start(void);
 
+public:
+	/**
+	 * The GLFW window.
+	 */
+	GLFWwindow* window;
+
 	/**
 	 * The Update function.
 	 * Calls once every frame.
@@ -56,4 +57,9 @@ public:
 	 * Gets the window height;
 	 */
 	int getHeight(void) const;
+
+	/**
+	 * \brief The setting menu width.
+	 */
+	static constexpr float settingsMenuWidth = 250.f;
 };

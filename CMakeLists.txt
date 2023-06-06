@@ -36,6 +36,7 @@ set (HEADERS
 	"src/utilities/UserInterface.h"
 	# Barycentric Coordinates
 	"src/barycentric_coordinates/BarycentricCoordinates.h"
+	"src/flicker_fusion/FlickerFusion.h"
 )
 
 # Define source files
@@ -73,8 +74,6 @@ include_directories(
 add_executable(Computergraphik ${SOURCES} ${HEADERS} ${RESOURCES})
 #add_executable(Computergraphik WIN32 ${SOURCES} ${HEADERS} ${RESOURCES})
 #add_executable(Computergraphik MACOSX_BUNDLE ${SOURCES} ${HEADERS} ${RESOURCES})
-
-set_target_properties(Computergraphik PROPERTIES LINK_FLAGS "-mwindows")
 
 # IMGUI specific compile definition:
 target_compile_definitions(Computergraphik PUBLIC -DCMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")

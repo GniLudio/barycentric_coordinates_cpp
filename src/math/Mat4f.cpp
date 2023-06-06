@@ -255,7 +255,7 @@ Mat4f Mat4f::rotationZ(float angle)
 
 Mat4f Mat4f::rotation(float angleX, float angleY, float angleZ)
 {
-	return rotationZ(angleZ) * rotationY(angleY) * rotationX(angleX);
+	return rotationX(angleX) * rotationY(angleY) * rotationZ(angleZ);
 }
 
 Mat4f Mat4f::scale(float scale)

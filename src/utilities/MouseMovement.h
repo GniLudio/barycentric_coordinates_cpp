@@ -14,24 +14,27 @@ namespace Utilities
 	 * @param rotationSpeed The rotation speed.
 	 * @param zoomSpeed The zoom speed.
 	 */
-	inline bool ApplyMouseMovement(Mat4f& mouseMovement, ImGuiMouseButton mouseButton, float rotationSpeed = 0.005f, float zoomSpeed = 0.05f)
+	inline bool UpdateMouseRotation(float& mouseRotationX, float& mouseRotationY,
+		ImGuiMouseButton mouseButton, float rotationSpeed = 0.005f)
 	{
-		bool changed = false;
 		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
 		{
 			ImVec2 mouseDelta = ImGui::GetIO().MouseDelta;
-
-			mouseMovement = Mat4f::rotationX(mouseDelta.y * rotationSpeed) * mouseMovement;
-			mouseMovement = Mat4f::rotationY(mouseDelta.x * rotationSpeed) * mouseMovement;
-			changed = true;
+			mouseRotationX += mouseDelta.y * rotationSpeed;
+			mouseRotationY += mouseDelta.x * rotationSpeed;
+			return true;
 		}
+		return false;
+	}
 
+	inline bool UpdateMouseZoom(float& mouseZoom, float zoomSpeed = 0.05f)
+	{
 		if (0 != ImGui::GetIO().MouseWheel)
 		{
-			mouseMovement = Mat4f::scale(1 + (ImGui::GetIO().MouseWheel < 0 ? -zoomSpeed : zoomSpeed)) * mouseMovement;
-			changed = true;
+			mouseZoom *= 1 + (ImGui::GetIO().MouseWheel < 0 ? -zoomSpeed : zoomSpeed);
+			return true;
 		}
-		return changed;
+		return false;
 	}
 
 	/**

@@ -84,10 +84,12 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 	GLFWimage images[1];
 	images[0].pixels = stbi_load(CMAKE_SOURCE_DIR"/images/icon.png", &images[0].width, &images[0].height, NULL, 4); //rgba channels 
 	glfwSetWindowIcon(window, 1, images);
+	
 	stbi_image_free(images[0].pixels);
+
 }
 
-Window::~Window()
+Window::~Window(void)
 {
 	std::cout << "Destroy ImGui context." << std::endl;
 	ImGui_ImplOpenGL3_Shutdown();
@@ -99,7 +101,7 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::Start()
+void Window::Start(void)
 {
 	while (!glfwWindowShouldClose(window))
 	{
@@ -128,7 +130,7 @@ void Window::Start()
 
 }
 
-void Window::Update()
+void Window::Update(void)
 {
 	ImGui::ShowDemoWindow();
 }
