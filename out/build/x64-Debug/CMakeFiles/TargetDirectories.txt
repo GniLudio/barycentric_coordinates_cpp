@@ -1,0 +1,15 @@
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/CMakeFiles/Computergraphik.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/CMakeFiles/imgui.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/CMakeFiles/edit_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/CMakeFiles/rebuild_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/CMakeFiles/edit_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/CMakeFiles/rebuild_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/src/CMakeFiles/update_mappings.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/src/CMakeFiles/glfw.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/src/CMakeFiles/edit_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/imgui-1.89.4/glfw_bin/src/CMakeFiles/rebuild_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/glad/CMakeFiles/glad.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/glad/CMakeFiles/edit_cache.dir
+C:/Users/GC-MS/Documents/Studium/Computergraphik/cgv1-demos/out/build/x64-Debug/lib/glad/CMakeFiles/rebuild_cache.dir
