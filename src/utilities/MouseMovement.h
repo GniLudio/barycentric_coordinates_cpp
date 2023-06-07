@@ -63,6 +63,14 @@ namespace Utilities
 		return iNearest;
 	}
 
+	/**
+	 * \brief Projects a points onto a plane.
+	 * \param p0 The original point.
+	 * \param d The direction onto the plane.
+	 * \param n The normal of the plane.
+	 * \param c A point on the plane.
+	 * \return The projected point.
+	 */
 	inline Vec4f IntersectPlane(Vec4f p0, Vec4f d, Vec4f n, Vec4f c)
 	{
 		float t = (n.dot(c.toVector()) - n.dot(p0.toVector())) / (n.dot(d));
@@ -100,14 +108,7 @@ namespace Utilities
 		return false;
 	}
 
-	/**
-	 * \brief Projects a points onto a plane.
-	 * \param p0 The original point.
-	 * \param d The direction onto the plane.
-	 * \param n The normal of the plane.
-	 * \param c A point on the plane.
-	 * \return The projected point.
-	 */
+
 
 
 
