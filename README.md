@@ -7,12 +7,10 @@ A demonstration of barycentric coordinates.
 Several settings can be found in *src/settings.h*.
 
 ## Build
-
-The executable can be build with the following commands:
 1. `cmake -S . -B output-path`
 2. `cmake --build output-path`
 
-The executable can be found at '*output-path/debug/Computergraphik.exe*'.
+The executable can be found at '*output-path/Debug/Computergraphik.exe*'.
 
 ## Controls
 | Input | Description |

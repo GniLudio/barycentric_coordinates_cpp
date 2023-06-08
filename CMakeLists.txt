@@ -14,6 +14,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_subdirectory(lib/imgui-1.89.4/)
 add_subdirectory(lib/glad/)
 
+# Allow to include files directly from this paths
+include_directories(
+	"src"
+	"lib/tiny_obj_loader"
+	"lib/stb"
+)
+
 # Define header files
 set (HEADERS
 	# Math
@@ -37,7 +44,6 @@ set (HEADERS
 	"src/utilities/UserInterface.h"
 	# Barycentric Coordinates
 	"src/barycentric_coordinates/BarycentricCoordinates.h"
-	"src/flicker_fusion/FlickerFusion.h"
 )
 
 # Define source files
@@ -53,22 +59,18 @@ set (SOURCES
 	"src/rendering/CircleDrawer.cpp"
 	# Window
 	"src/window/Window.cpp" 
+	# Utilities
 	"src/utilities/UserInterface.cpp"
 )
 
 # Define shader & other resources
 set (RESOURCES
+	"shader/simple.vert"
+	"shader/simple.frag"
 	"shader/line.vert"
 	"shader/line.frag"
 	"shader/circle.vert"
 	"shader/circle.frag"
-)
-
-# Allow to include files directly from this paths
-include_directories(
-	"src"
-	"lib/tiny_obj_loader"
-	"lib/stb"
 )
 
 # Define the executable
