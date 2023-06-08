@@ -11,62 +11,61 @@
 #include <glad/glad.h>
 
 
-Shader::Shader(char* vertexShaderName, char* fragmentShaderName, char* sourceDir)
-	: numOfCopies(new int(1))
+Shader::Shader(const char* vertex_shader, const char* fragment_shader, const char* source_dir)
+	: num_of_copies(new int(1))
 {
-    const std::string sSourceDir = std::string(sourceDir);
-	const std::string vertexShaderPath = sSourceDir + vertexShaderName;
-	const std::string fragmentShaderPath = sSourceDir + fragmentShaderName;
+    const std::string s_source_dir = std::string(source_dir);
+	const std::string vertex_shader_path = s_source_dir + vertex_shader;
+	const std::string fragment_shader_path = s_source_dir + fragment_shader;
 
     // Load vertex shader source as string:
-    std::ifstream ifs(vertexShaderPath);
+    std::ifstream ifs(vertex_shader_path);
     std::string vertexShaderSourceString(std::istreambuf_iterator<char>{ifs}, {});
     const char* vertexShaderSource = vertexShaderSourceString.c_str();
     ifs.close();
 
     // Load fragment shader source as string:
-    ifs = std::ifstream(fragmentShaderPath);
+    ifs = std::ifstream(fragment_shader_path);
     std::string fragmentShaderSourceString(std::istreambuf_iterator<char>{ifs}, {});
     const char* fragmentShaderSource = fragmentShaderSourceString.c_str();
     ifs.close();
 
     // Create temporary pointers to the compiled vertex and fragment shader:
-    unsigned int vertexShader;
-    unsigned int fragmentShader;
+    unsigned int t_vertex_shader, t_fragment_shader;
 
     // Upload VERTEX SHADER source code to GPU and compile it:
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
+    t_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(t_vertex_shader, 1, &vertexShaderSource, nullptr);
+    glCompileShader(t_vertex_shader);
 
     // Check if compilation was successful, otherwise print error:
     int success;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(t_vertex_shader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         char infoLog[512];
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "Vertex Shader Compilation failed:\n" << "File: " << vertexShaderPath << infoLog << std::endl;
+        glGetShaderInfoLog(t_vertex_shader, 512, nullptr, infoLog);
+        std::cout << "Vertex Shader Compilation failed:\n" << "File: " << vertex_shader_path << infoLog << std::endl;
     }
 
     // Upload FRAGMENT SHADER source code to GPU and compile it:
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
+    t_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(t_fragment_shader, 1, &fragmentShaderSource, nullptr);
+    glCompileShader(t_fragment_shader);
 
     // Check if compilation was successful, otherwise print error to console:
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(t_fragment_shader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
         char infoLog[512];
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "Fragment Shader Compilation failed:\n" << "File: " << fragmentShaderPath << infoLog << std::endl;
+        glGetShaderInfoLog(t_fragment_shader, 512, nullptr, infoLog);
+        std::cout << "Fragment Shader Compilation failed:\n" << "File: " << fragment_shader_path << infoLog << std::endl;
     }
 
     // Finally create the shader program which contains both vertex and fragment shader:
     shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, t_vertex_shader);
+    glAttachShader(shaderProgram, t_fragment_shader);
     glLinkProgram(shaderProgram);
 
     // Check if linking of shaders was successful, otherwise print error to console:
@@ -75,34 +74,34 @@ Shader::Shader(char* vertexShaderName, char* fragmentShaderName, char* sourceDir
     {
         char infoLog[512];
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << " (" << vertexShaderPath << ", " << fragmentShaderPath << ")" << std::endl;
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << " (" << vertex_shader_path << ", " << fragment_shader_path << ")" << std::endl;
     }
 
     // After shaders were linked to a shader program, we don't need the
     // compiled shaders anymore to run the shader program, so we can delete
     // it on the GPU:
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    glDeleteShader(t_vertex_shader);
+    glDeleteShader(t_fragment_shader);
 
     if (success)
         initialized = true;
 }
 
 Shader::Shader(const Shader& shader)
-	: shaderProgram(shader.shaderProgram), initialized(shader.initialized), numOfCopies(shader.numOfCopies)
+	: shaderProgram(shader.shaderProgram), initialized(shader.initialized), num_of_copies(shader.num_of_copies)
 {
-    ++(*numOfCopies);
+    ++(*num_of_copies);
 }
 
 Shader::~Shader()
 {
-    --(*numOfCopies);
-    if (*numOfCopies > 0) return;
+    --(*num_of_copies);
+    if (*num_of_copies > 0) return;
 
     if (shaderProgram != 0) 
         glDeleteProgram(shaderProgram);
 
-    delete numOfCopies;
+    delete num_of_copies;
 
 }
 
@@ -111,7 +110,7 @@ void Shader::bind() const
     glUseProgram(shaderProgram);
 }
 
-void Shader::setUniform(char* name, Mat4f matrix) const
+void Shader::setUniform(const char* name, Mat4f matrix) const
 {
     if (!initialized) return;
 
@@ -125,7 +124,7 @@ void Shader::setUniform(char* name, Mat4f matrix) const
 
 }
 
-void Shader::setUniform(char* name, Vec4f vector, int num) const
+void Shader::setUniform(const char* name, Vec4f vector, int num) const
 {
     if (!initialized) return;
 
@@ -153,7 +152,7 @@ void Shader::setUniform(char* name, Vec4f vector, int num) const
 
 }
 
-void Shader::setUniform(char* name, float value) const
+void Shader::setUniform(const char* name, float value) const
 {
     if (!initialized) return;
 
@@ -169,7 +168,7 @@ void Shader::setUniform(char* name, float value) const
 
 }
 
-void Shader::setUniform(char* name, int value) const
+void Shader::setUniform(const char* name, int value) const
 {
     if (!initialized) return;
 

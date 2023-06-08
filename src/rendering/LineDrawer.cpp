@@ -28,7 +28,7 @@ LineDrawer::LineDrawer() : Shader("line.vert", "line.frag")
 
 LineDrawer::~LineDrawer()
 {
-	if ((*numOfCopies) - 1 > 0) return;
+	if ((*num_of_copies) - 1 > 0) return;
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 }

@@ -50,7 +50,7 @@ Mesh::Mesh(const char* file_name, const char* source_dir) : Mesh()
 
 Mesh::~Mesh()
 {
-	if ((*numOfCopies)-1 > 0) return;
+	if ((*num_of_copies)-1 > 0) return;
 
 	if (vao != 0)
 		glDeleteVertexArrays(1, &vao);
