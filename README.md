@@ -1,6 +1,5 @@
 # Barycentric Coordinates
 
-## General
 A demonstration of barycentric coordinates.
 
 ## Settings
