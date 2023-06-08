@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.10.0)
 
 # Define the project
-project ("Computergraphik" C CXX)
+project("Computergraphik" C CXX)
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 11)
@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Automically include generated files
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# Add libaries
 add_subdirectory(lib/imgui-1.89.4/)
 add_subdirectory(lib/glad/)
 
@@ -72,8 +73,6 @@ include_directories(
 
 # Define the executable
 add_executable(Computergraphik ${SOURCES} ${HEADERS} ${RESOURCES})
-#add_executable(Computergraphik WIN32 ${SOURCES} ${HEADERS} ${RESOURCES})
-#add_executable(Computergraphik MACOSX_BUNDLE ${SOURCES} ${HEADERS} ${RESOURCES})
 
 # IMGUI specific compile definition:
 target_compile_definitions(Computergraphik PUBLIC -DCMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")

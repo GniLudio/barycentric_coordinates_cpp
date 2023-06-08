@@ -1,27 +1,32 @@
 #include "UserInterface.h"
 
 #include <string>
-#include <iostream>
+#include "settings.h"
 
-void UserInterface::BeginInfoMenu(const Window& window, float uiMargin)
+void UserInterface::BeginInfoMenu(const Window& window)
 {
-	ImGui::SetNextWindowPos(ImVec2(uiMargin, window.getHeight() - uiMargin), 0, ImVec2(0.f, 1.f));
+	ImGui::SetNextWindowPos(ImVec2(Settings::ui_margin, window.get_height() - Settings::ui_margin), 0, ImVec2(0.f, 1.f));
 	ImGui::Begin("Info", nullptr,
 		ImGuiWindowFlags_NoDecoration |
 		ImGuiWindowFlags_NoInputs |
 		ImGuiWindowFlags_AlwaysAutoResize
 	);
+	ImGui::PushItemWidth(Settings::menu_width);
 }
 
-void UserInterface::BeginSettingsMenu(const Window& window, float uiMargin)
+void UserInterface::BeginSettingsMenu(const Window& window)
 {
-	ImGui::SetNextWindowPos(ImVec2(window.getWidth() - uiMargin, uiMargin), 1, ImVec2(1.f, 0.f));
+	ImGui::SetNextWindowPos(ImVec2(window.get_width() - Settings::ui_margin, Settings::ui_margin), 1, ImVec2(1.f, 0.f));
 	ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing);
-	ImGui::Begin("Settings", nullptr,
+	ImGui::Begin("Settings (S)", nullptr,
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_AlwaysAutoResize
 	);
+	ImGui::PushItemWidth(Settings::menu_width);
+	AddTooltip("Keyboard Shortcut: 'S'");
+	if (ImGui::IsKeyPressed(ImGuiKey_S, false))
+		ImGui::SetWindowCollapsed(!ImGui::IsWindowCollapsed());
 }
 
 bool UserInterface::AddCollapsingHeader(const char* title)
@@ -36,7 +41,7 @@ bool UserInterface::AddCollapsingHeader(const char* title)
 void UserInterface::AddText(const char* text, Vec4f pos, Mat4f modelMatrix, const Window& window)
 {
 	pos = modelMatrix * pos;
-	ImGui::SetNextWindowPos(ImVec2(pos.x + window.getWidth() / 2.0f, -pos.y + window.getHeight() / 2.f), 0, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(ImVec2(pos.x + window.get_width() / 2.0f, -pos.y + window.get_height() / 2.f), 0, ImVec2(0.5f, 0.5f));
 	ImGui::Begin(text, nullptr,
 		ImGuiWindowFlags_NoNav |
 		ImGuiWindowFlags_NoDecoration |

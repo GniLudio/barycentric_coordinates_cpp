@@ -16,109 +16,125 @@
 #include "rendering/LineDrawer.h"
 #include "rendering/Mesh.h"
 
+/**
+ * \brief A demonstration of the barycentric coordinates.
+ */
 class BarycentricCoordinates : public Window
 {
 public:
 	/**
 	 * \brief The constructor.
-	 * \param width The initial window width.
-	 * \param height The initial window height.
-	 * \param fontSize The font size.
-	 * \param imguiStyle The imgui style. (light, dark, classic)
 	 */
-	BarycentricCoordinates(int width = 1280, int height = 720, float fontSize = 16.0f, ImGuiStyleFunction imguiStyle = ImGui::StyleColorsClassic)
-		: Window("Barycentric Coordinates", width, height, fontSize, imguiStyle)
+	BarycentricCoordinates() : Window("Barycentric Coordinates")
 	{
-		Reset();
+		reset();
 	}
 protected:
 	/**
 	 * \brief The update method. (Called each frame)
 	 */
-	void Update(void) override
+	void update(void) override
 	{
-		glClearColor(0, 0, 0, 1.f);
-		this->CheckInputs();
-		this->UpdateUI();
-		this->Draw();
+		const Vec4f bg_color = Settings::background_color;
+		glClearColor(bg_color.x, bg_color.y, bg_color.z, bg_color.w);
+		this->handle_inputs();
+		this->update_ui();
+		this->draw();
 	}
-
 private:
-	void Reset(void)
-	{
-		triangle = Triangle(
-			Vertex({ -500, 0 }, Colors::RED),
-			Vertex({ 200, 200 }, Colors::GREEN),
-			Vertex({ 300, -300 }, Colors::BLUE)
-		);
-		barycentric = Barycentric(1 / 3.f, 1 / 3.f, 1 / 3.f);
-		UpdatePoint(-1);
-		pointColor = Colors::WHITE;
-		pointSize = 10.f;
-
-		onlyInside = true;
-		currently_dragging = -1;
-
-		displayIsolines = false;
-		isolineStart = -1.f;
-		isolineEnd = 1.f;
-		isolineInterval = 1.f;
-
-		mouseZoom = 1.f;
-		mouseRotationX = 0.f;
-		mouseRotationY = 0.f;
-	}
 	/**
 	 * \brief The triangle.
 	 * Can be moved with the mouse.
 	 */
 	Triangle triangle;
+
 	/**
 	 * \brief The barycentric coordinates.
 	 * Is updated when the point gets moved.
 	 */
 	Barycentric barycentric;
+
+	/**
+	 * \brief Wether to display the vertex names.
+	 */
+	bool display_vertex_names;
+
 	/**
 	 * \brief The point.
 	 * Is updated when the barycentric coordinates or the triangle gets changed.
 	 */
 	Vec4f point;
+
 	/**
 	 * \brief The point color.
 	 */
-	Vec4f pointColor;
+	Vec4f point_color;
+
 	/**
 	 * \brief The point size.
 	 */
-	float pointSize;
+	float point_size;
+
 	/**
 	 * \brief Whether the point needs to be inside the triangle.
 	 */
-	bool onlyInside;
+	bool only_inside;
+
 	/**
 	 * \brief Which point is currently being dragged.
 	 * Keeps dragging the same point until the mouse is released.
 	 */
 	int currently_dragging;
+
 	/**
 	 * \brief Whether the isolines should be displayed
 	 */
-	bool displayIsolines;
+	bool isolines_enabled;
+
 	/// <summary>
 	/// Setting which isolines should be displayed.
 	/// </summary>
-	float isolineStart, isolineInterval, isolineEnd;
+	float isolines_start, isolines_interval, isolines_end;
+
 	/// <summary>
 	/// Setting for the mouse movement.
 	/// </summary>
-	float mouseZoom, mouseRotationX, mouseRotationY;
+	float mouse_zoom, mouse_rotation_x, mouse_rotation_y;
+
+	const char* barycentric_labels[3] = {"Alpha", "Beta", "Gamma"};
+	const Vec4f barycentric_colors[3] = {Colors::BLUE, Colors::GREEN, Colors::RED};
+
+	/**
+	 * \brief Resets all settings.
+	 */
+	void reset(void)
+	{
+		triangle = Settings::triangle;
+		display_vertex_names = Settings::display_vertex_names;
+		barycentric = Settings::barycentric;
+		update_point(-1);
+		point_color = Settings::point_color;
+		point_size = Settings::point_size;
+
+		only_inside = Settings::only_inside;
+		currently_dragging = -1;
+
+		isolines_enabled = Settings::display_isolines;
+		isolines_start = Settings::isoline_start;
+		isolines_end = Settings::isoline_end;
+		isolines_interval = Settings::isoline_interval;
+
+		mouse_zoom = 1.f;
+		mouse_rotation_x = 0.f;
+		mouse_rotation_y = 0.f;
+	}
 private:
 	/**
 	 * \brief Keeps the point inside the triangle and updates the barycentric coordinates.
 	 */
-	void KeepInside(void)
+	void keep_point_inside_triangle(void)
 	{
-		point = triangle.closest(point);
+		point = triangle.closest_in_triangle(point);
 		barycentric = Barycentric(triangle[0].position, triangle[1].position, triangle[2].position, point);
 	}
 
@@ -126,39 +142,42 @@ private:
 	 * \brief Returns the mouse movement matrix.
 	 * \return The mouse movement.
 	 */
-	Mat4f getMouseMovement(void)
+	Mat4f get_mouse_movement_matrix(void) const
 	{
-		return Mat4f::scale(mouseZoom) * Mat4f::rotation(mouseRotationX, mouseRotationY);
+		return Mat4f::scale(mouse_zoom) * Mat4f::rotation(mouse_rotation_x, mouse_rotation_y);
 	}
 
 	/**
 	 * \brief Updates the point according to the barycentric coordinates and the triangle.
-	 * \param changedBarycentric Which barycentric coordinate was modified. (-1 if no balancing is needed)
+	 * \param changed_barycentric Which barycentric coordinate was modified. (-1 if no balancing is needed)
 	 */
-	void UpdatePoint(int changedBarycentric)
+	void update_point(int changed_barycentric)
 	{
 		// balances the barycentric coordinates if needed
-		if (changedBarycentric != -1)
+		if (changed_barycentric != -1)
 		{
-			float change = 1.f - (barycentric[0] + barycentric[1] + barycentric[2]);
+			const float change = 1.f - (barycentric[0] + barycentric[1] + barycentric[2]);
 			for (int i=0; i<3; i++)
-				if (i != changedBarycentric && i)
+			{
+				if (i != changed_barycentric)
 					barycentric[i] += change / 2.f;
+			}
 		}
 		// updates the point
-		point = triangle.calculatePoint(barycentric);
+		point = triangle.calculate_point(barycentric);
 		// keeps the point inside
-		if (onlyInside) this->KeepInside();
+		if (only_inside) 
+			this->keep_point_inside_triangle();
 	}
 
 	/**
 	 * \brief Updates the barycentric coordinates according to the triangle and point positions.
 	 */
-	void UpdateBarycentric(void)
+	void update_barycentric_coordinates(void)
 	{
 		// keeps the point inside (and updates the barycentric coordinates)
-		if (onlyInside) 
-			this->KeepInside();
+		if (only_inside) 
+			this->keep_point_inside_triangle();
 		// updates the barycentric coordinates
 		else
 			barycentric = Barycentric(triangle[0].position, triangle[1].position, triangle[2].position, point);
@@ -167,31 +186,31 @@ private:
 	/**
 	 * \brief Handles user inputs.
 	 */
-	void CheckInputs(void)
+	void handle_inputs(void)
 	{
-		Mat4f mouseMovement = getMouseMovement();
-		// zoom with mouse wheel
-		Utilities::UpdateMouseZoom(mouseZoom);
-		// rotate with with shift + left click
+		const Mat4f mouse_movement = get_mouse_movement_matrix();
+		// update zoom (with mouse wheel
+		Utilities::update_zoom(mouse_zoom);
+		// update rotation (with Shift + Left Mouse)
 		if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
 		{
-			Utilities::UpdateMouseRotation(mouseRotationX, mouseRotationY, ImGuiMouseButton_Left);
+			Utilities::update_rotation(mouse_rotation_x, mouse_rotation_y, ImGuiMouseButton_Left);
 		}
-		// move points with left click
+		// update point position (with Left Mouse)
 		else
 		{
 			Vec4f* points[4] = { &triangle[0].position, &triangle[1].position, &triangle[2].position, &point };
-			if (Utilities::MoveWithMouse(points, 4, mouseMovement, ImGuiMouseButton_Left, currently_dragging))
+			if (Utilities::MoveWithMouse(points, 4, mouse_movement, ImGuiMouseButton_Left, currently_dragging))
 			{
 				switch (currently_dragging)
 				{
 				case 0:
 				case 1:
 				case 2:
-					UpdatePoint(-1);
+					update_point(-1);
 					break;
 				case 3:
-					UpdateBarycentric();
+					update_barycentric_coordinates();
 					break;
 				default:
 					break;
@@ -202,80 +221,83 @@ private:
 		// keyboard shortcuts
 		if (ImGui::IsKeyPressed(ImGuiKey_L, false))
 		{
-			displayIsolines = !displayIsolines;
+			isolines_enabled = !isolines_enabled;
 		}
 		if (ImGui::IsKeyPressed(ImGuiKey_I, false))
 		{
-			onlyInside = !onlyInside;
-			UpdateBarycentric();
+			only_inside = !only_inside;
+			update_barycentric_coordinates();
 		}
 		if (ImGui::IsKeyPressed(ImGuiKey_R, false))
-			Reset();
+			reset();
 	}
 
 	/**
 	 * \brief Updates the User Interface.
 	 */
-	void UpdateUI(void)
+	void update_ui(void)
 	{
-		Mat4f mouseMovement = getMouseMovement();
+		const Mat4f mouse_movement = get_mouse_movement_matrix();
 
 		// settings menu
 		UserInterface::BeginSettingsMenu(*this);
-		ImGui::PushItemWidth(settingsMenuWidth);
-
-		Mat4f temp;
 		if (UserInterface::AddCollapsingHeader("Triangle"))
 		{
 			ImGui::Indent();
-			char* labels[3] = { "A", "B", "C" };
-			for (int i = 0; i < 3; i++)
-				if (UserInterface::DragVec(&triangle[i].position[0], labels[i], 2))
-					UpdatePoint(-1);
+			ImGui::Checkbox("Show Names", &display_vertex_names);
+			if (UserInterface::DragVec(&triangle[0].position.x, "A", 2))
+				update_point(0);
+			if (UserInterface::DragVec(&triangle[1].position.x, "B", 2))
+				update_point(1);
+			if (UserInterface::DragVec(&triangle[2].position.x, "B", 2))
+				update_point(2);
 			ImGui::Unindent();
 		}
 		ImGui::Spacing();
-
 		if (UserInterface::AddCollapsingHeader("Barycentric Coordinates"))
 		{
 			ImGui::Indent();
-			if (ImGui::Checkbox("Only Inside (I)", &onlyInside))
-				UpdateBarycentric();
+			if (ImGui::Checkbox("Only Inside (I)", &only_inside))
+				update_barycentric_coordinates();
 			UserInterface::AddTooltip("Keyboard Shortcut: 'I'");
-			char* labels[4] = { "", "Beta", "Gamma", "None" };
-			char* labels2[3] = { "Alpha", "Beta", "Gamma" };
 			for (int i = 0; i < 3; i++)
 			{
-				if (onlyInside)
+				if (isolines_enabled)
 				{
-					if (ImGui::DragFloat(labels2[i], &barycentric[i], 0.01f, 0.f, 1.f))
-						UpdatePoint(i);
+					Vec4f color = Colors::WHITE * 0.8f + barycentric_colors[i].toVector() * 0.2f;
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.x, color.y, color.z, color.w));
+				}
+				if (only_inside)
+				{
+					if (ImGui::DragFloat(barycentric_labels[i], &barycentric[i], 0.01f, 0.f, 1.f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+						update_point(i);
 				}
 				else {
-					if (ImGui::DragFloat(labels2[i], &barycentric[i], 0.01f))
-						UpdatePoint(i);
+					if (ImGui::DragFloat(barycentric_labels[i], &barycentric[i], 0.01f))
+						update_point(i);
 				}
+				if (isolines_enabled)
+					ImGui::PopStyleColor();
 			}
 			if (UserInterface::DragVec(&point[0], "Point", 2))
-				UpdateBarycentric();
+				update_barycentric_coordinates();
 			ImGui::Unindent();
 		}
-
 		ImGui::Spacing();
-
 		if (UserInterface::AddCollapsingHeader("Isolines"))
 		{
 			ImGui::Indent();
-			ImGui::Checkbox("Display Isolines (L)", &displayIsolines);
+			ImGui::Checkbox("Show Isolines (L)", &isolines_enabled);
 			UserInterface::AddTooltip("Keyboard Shortcut: 'L'");
-			ImGui::DragFloat("Start", &isolineStart, 0.1f, 0, 0,"%.1f");
-			ImGui::DragFloat("End", &isolineEnd, 0.1f, 0, 0, "%.1f");
-			ImGui::DragFloat("Interval", &isolineInterval, 0.01f, 0, 0, "%.2f");
-			UserInterface::AddTooltip("Values between -0.01 and 0.01 are ignored.");
+			ImGui::DragFloat("Start", &isolines_start, 0.1f, 0, 0,"%.1f");
+			ImGui::DragFloat("End", &isolines_end, 0.1f, 0, 0,"%.1f");
+			ImGui::DragFloat("Interval", &isolines_interval, 0.01f, 0, 999.99f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+			UserInterface::AddTooltip("The isolines are not displayed for values between -0.01 and 0.01.");
 			ImGui::Unindent();
 		}
-
-		if (ImGui::Button("Reset (R)")) Reset();
+		ImGui::Spacing();
+		if (ImGui::Button("Reset All (R)")) 
+			reset();
 		UserInterface::AddTooltip("Keyboard Shortcut: 'R'");
 		ImGui::PopItemWidth();
 		ImGui::End();
@@ -297,13 +319,19 @@ private:
 		ImGui::End();
 	}
 
-	Vec4f infiniteVector(Vec4f vector, Mat4f modelMatrix)
+	/**
+	 * \brief Returns a vector with a length that can cover the whole screen.
+	 * \param direction The direction.
+	 * \param modelMatrix The model matrix.
+	 * \return The infinite vector.
+	 */
+	Vec4f get_infinite_vector(Vec4f direction, Mat4f modelMatrix) const
 	{
-		Vec4f temp = modelMatrix * vector;
+		Vec4f temp = modelMatrix * direction;
 
-		Vec4f result = Vec4f(vector);
+		Vec4f result = direction;
 		result.z = 0;
-		result = result * (getWidth() / temp.x) * (getHeight() / temp.y);
+		result = result * (get_width() / temp.x) * (get_height() / temp.y);
 
 		return result;
 	}
@@ -311,39 +339,47 @@ private:
 	/**
 	 * \brief Draws the image.
 	 */
-	void Draw(void)
+	void draw(void)
 	{
-		Mat4f mouseMovement = getMouseMovement();
-		Mat4f iWindowMat = Mat4f::scale(2.f / getWidth(), 2.f / getHeight(), 0);
-		Mat4f modelMatrix = iWindowMat * mouseMovement;
+		const Mat4f mouse_movement = get_mouse_movement_matrix();
+		const Mat4f inverse_window = Mat4f::scale(2.f / get_width(), 2.f / get_height(), 0);
+		const Mat4f model_matrix = inverse_window * mouse_movement;
 
-		CircleDrawer circleDrawer;
-		LineDrawer lineDrawer;
+		const CircleDrawer circle_drawer;
+		const LineDrawer line_drawer;
 
-		Mesh({ triangle }).render(modelMatrix);
-		if (displayIsolines && std::abs(isolineInterval) >= 0.01f)
+		// draw triangle
+		Mesh({ triangle }).render(model_matrix);
+		// draw isolines
+		if (isolines_enabled && std::abs(isolines_interval) >= 0.01f)
 		{
-			Vec4f ab = infiniteVector(triangle[1].position - triangle[0].position, modelMatrix);
-			Vec4f ac = infiniteVector(triangle[2].position - triangle[0].position, modelMatrix);
-			Vec4f bc = infiniteVector(triangle[2].position - triangle[1].position, modelMatrix);
-			for (float i = isolineStart; i <= isolineEnd; i += isolineInterval)
+			const Vec4f ab = get_infinite_vector(triangle[1].position - triangle[0].position, model_matrix);
+			const Vec4f ac = get_infinite_vector(triangle[2].position - triangle[0].position, model_matrix);
+			const Vec4f bc = get_infinite_vector(triangle[2].position - triangle[1].position, model_matrix);
+			for (float i = isolines_start; i <= isolines_end; i += isolines_interval)
 			{
-				float other = (1.f - i) / 2.f;
+				const float other = (1.f - i) / 2.f;
 				// alpha
-				Vec4f p = triangle.calculatePoint(Barycentric(i, other, other));
-				lineDrawer.draw(p, p + bc, Colors::BLUE, modelMatrix);
-				lineDrawer.draw(p, p - bc, Colors::BLUE, modelMatrix);
+				Vec4f p = triangle.calculate_point(Barycentric(i, other, other));
+				line_drawer.draw(p, p + bc, barycentric_colors[0], model_matrix);
+				line_drawer.draw(p, p - bc, barycentric_colors[0], model_matrix);
 				// beta
-				p = triangle.calculatePoint(Barycentric(other, i, other));
-				lineDrawer.draw(p, p + ac, Colors::GREEN, modelMatrix);
-				lineDrawer.draw(p, p - ac, Colors::GREEN, modelMatrix);
+				p = triangle.calculate_point(Barycentric(other, i, other));
+				line_drawer.draw(p, p + ac, barycentric_colors[1], model_matrix);
+				line_drawer.draw(p, p - ac, barycentric_colors[1], model_matrix);
 				// gamma
-				p = triangle.calculatePoint(Barycentric(other, other, i));
-				lineDrawer.draw(p, p + ab, Colors::RED, modelMatrix);
-				lineDrawer.draw(p, p - ab, Colors::RED, modelMatrix);
+				p = triangle.calculate_point(Barycentric(other, other, i));
+				line_drawer.draw(p, p + ab, barycentric_colors[2], model_matrix);
+				line_drawer.draw(p, p - ab, barycentric_colors[2], model_matrix);
 			}
 		}
-		circleDrawer.draw(point, pointSize, pointColor, modelMatrix);
+		circle_drawer.draw(point, point_size, point_color,model_matrix);
+		if (display_vertex_names)
+		{
+			UserInterface::AddText("A", triangle[0].position, mouse_movement, *this);
+			UserInterface::AddText("B", triangle[1].position, mouse_movement, *this);
+			UserInterface::AddText("C", triangle[2].position, mouse_movement, *this);
+		}
 
 	}
 };

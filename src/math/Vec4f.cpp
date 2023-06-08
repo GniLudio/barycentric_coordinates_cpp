@@ -14,21 +14,21 @@ Vec4f::Vec4f(float data[4])
 
 Vec4f Vec4f::toPoint() const
 {
-	checkIsVector("toPoint");
+	checkIsVector("toPoint (this)");
 	return Vec4f() + *this;
 }
 
 Vec4f Vec4f::toVector() const
 {
-	checkIsPoint("toVector");
+	checkIsPoint("toVector (this)");
 	return *this - Vec4f();
 }
 
 float Vec4f::length(int dimensions) const
 {
-	if (dimensions < 1 || dimensions > 3)
-		throw std::invalid_argument("Vec4f.length should be called with dimensions between 1-3");
-	checkIsVector("length");
+	if (dimensions < 0 || dimensions > 4)
+		throw std::invalid_argument("Vec4f.length should be called with dimensions between 0-4");
+	checkIsVector("length (this)");
 	float l = 0;
 	for (int i=0; i<dimensions; i++)
 	{
@@ -40,9 +40,9 @@ float Vec4f::length(int dimensions) const
 
 float Vec4f::squaredLength(int dimensions) const
 {
-	if (dimensions < 1 || dimensions > 3)
-		throw std::invalid_argument("Vec4f.squaredLength should be called with dimensions between 1-3");
-	checkIsVector("squaredLength");
+	if (dimensions < 0 || dimensions > 4)
+		throw std::invalid_argument("Vec4f.squaredLength should be called with dimensions between 0-4");
+	checkIsVector("squaredLength (this)");
 	float l = 0;
 	for (int i = 0; i < dimensions; i++)
 	{
@@ -53,43 +53,43 @@ float Vec4f::squaredLength(int dimensions) const
 
 float Vec4f::distanceTo(Vec4f p, int dimensions) const
 {
-	checkIsPoint("distanceTo");
-	p.checkIsPoint("distanceTo");
+	checkIsPoint("distanceTo (this)");
+	p.checkIsPoint("distanceTo (p)");
 	return (*this - p).length(dimensions);
 }
 
-float Vec4f::dot(Vec4f v) const
+float Vec4f::dot(Vec4f vector) const
 {
-	checkIsVector("dot");
-	v.checkIsVector("dot");
-	return x * v.x + y * v.y + z * v.z;
+	checkIsVector("dot (this)");
+	vector.checkIsVector("dot (vector)");
+	return x * vector.x + y * vector.y + z * vector.z;
 }
 
-Vec4f Vec4f::cross(Vec4f v) const
+Vec4f Vec4f::cross(Vec4f vector) const
 {
-	checkIsVector("cross");
-	v.checkIsVector("cross");
+	checkIsVector("cross (this)");
+	vector.checkIsVector("cross  (vector)");
 	return {
-		y * v.z - z * v.y,
-		z * v.x - x * v.z,
-		x * v.y - y * v.x,
+		y * vector.z - z * vector.y,
+		z * vector.x - x * vector.z,
+		x * vector.y - y * vector.x,
 		0
 	};
 }
 
 Vec4f Vec4f::normalized(int dimensions) const
 {
-	checkIsVector("normalized");
+	checkIsVector("normalized (this)");
 	return *this / length(dimensions);
 }
 
-Vec4f Vec4f::closest(Vec4f start, Vec4f point)
+Vec4f Vec4f::closest(Vec4f start, Vec4f point) const
 {
 	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter1/closest_point_on_line.html
 
-	checkIsVector("closest");
-	start.checkIsPoint("closest");
-	point.checkIsPoint("closest");
+	checkIsVector("closest (this)");
+	start.checkIsPoint("closest (start)");
+	point.checkIsPoint("closest (point)");
 
 	float t = (point-start).dot(*this) / this->dot(*this);
 	t = std::max(0.f, std::min(t, 1.f));
@@ -126,7 +126,7 @@ Vec4f Vec4f::operator+(Vec4f v) const
 {
 	if (isPoint() && v.isPoint())
 	{
-		std::string message = std::string() + "'Vec4f.operator+' shouldn't be used on two points.";
+		const std::string message = std::string() + "'Vec4f.operator+' shouldn't be used on two points.";
 		std::cerr << message << std::endl;
 	}
 	return { x + v.x, y + v.y, z + v.z, w + v.w };
@@ -137,14 +137,14 @@ Vec4f Vec4f::operator-(Vec4f v) const
 	return { x - v.x, y - v.y, z - v.z, w - v.w };
 }
 
-Vec4f Vec4f::operator*(float s) const
+Vec4f Vec4f::operator*(float scalar) const
 {
-	return { x * s, y * s, z * s, w };
+	return { x * scalar, y * scalar, z * scalar, w };
 }
 
-Vec4f Vec4f::operator/(float s) const
+Vec4f Vec4f::operator/(float scalar) const
 {
-	return { x / s, y / s, z / s, w };
+	return { x / scalar, y / scalar, z / scalar, w };
 }
 
 float& Vec4f::operator[](int i)
@@ -173,27 +173,27 @@ float Vec4f::operator[](int i) const
 	}
 }
 
-std::ostream& operator<<(std::ostream& os, Vec4f vector)
+std::ostream& operator<<(std::ostream& os, Vec4f v)
 {
-	char c = vector.isPoint() ? 'P' : vector.isVector() ? 'V' : '?';
-	os << c << "(" << vector.x << ", " << vector.y << ", " << vector.z << ", " << vector.w << ")";
+	const char c = v.isPoint() ? 'P' : v.isVector() ? 'V' : '?';
+	os << c << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
 	return os;
 }
 
-void Vec4f::checkIsPoint(char* method) const
+void Vec4f::checkIsPoint(const char* method) const
 {
 	if (!isPoint())
 	{
-		std::string message = std::string() + "'Vec4f." + method + "' should only be used on *points*.";
+		std::string message = std::string() + "'Vec4f." + method + "' should only be used with *points*.";
 		std::cerr << message << std::endl;
 	}
 }
 
-void Vec4f::checkIsVector(char* method) const
+void Vec4f::checkIsVector(const char* method) const
 {
 	if (!isVector())
 	{
-		std::string message = std::string() + "'Vec4f." + method + "' should only be used on *vectors*.";
+		std::string message = std::string() + "'Vec4f." + method + "' should only be used with *vectors*.";
 		std::cerr << message << std::endl;
 	}
 }

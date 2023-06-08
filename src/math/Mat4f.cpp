@@ -147,7 +147,7 @@ Mat4f Mat4f::adjugate() const
 		for (int j=0; j<4; j++)
 		{
 			// 3x3 matrix without the ij row and column
-			Mat4f jiMatrix = {};
+			Mat4f jiMatrix = Mat4f();
 			for (int x=0, dx=0; x<4; x++)
 			{
 				if (x == j) continue;

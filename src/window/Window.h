@@ -10,32 +10,34 @@
 // Include GLFW/OpenGL:
 #include <GLFW/glfw3.h>
 
-// Type for ImGui styles:
-typedef void (*ImGuiStyleFunction)(ImGuiStyle*);
-
 class Window
 {
 public:
 	/**
 	 * The constructor.
 	 * @param title The window title.
-	 * @param width The initial window width.
-	 * @param height The initial window height.
-	 * @param fontSize The font size.
-	 * @param imGuiStyle The ImGui style.
 	 */
-	Window(char* title, int width = 1280, int height = 720, float fontSize = 16.0f, ImGuiStyleFunction imGuiStyle = ImGui::StyleColorsClassic);
+	Window(char* title);
 
 	/**
 	 * The destructor.
 	 */
-	~Window(void);
+	virtual ~Window(void);
 
 	/**
 	 * Starts rendering.
 	 */
-	void Start(void);
+	void start(void);
 
+	/**
+	 * Gets the window width;
+	 */
+	int get_width(void) const;
+
+	/**
+	 * Gets the window height;
+	 */
+	int get_height(void) const;
 public:
 	/**
 	 * The GLFW window.
@@ -43,23 +45,8 @@ public:
 	GLFWwindow* window;
 
 	/**
-	 * The Update function.
+	 * The update function.
 	 * Calls once every frame.
 	 */
-	virtual void Update(void);
-
-	/**
-	 * Gets the window width;
-	 */
-	int getWidth(void) const;
-
-	/**
-	 * Gets the window height;
-	 */
-	int getHeight(void) const;
-
-	/**
-	 * \brief The setting menu width.
-	 */
-	static constexpr float settingsMenuWidth = 250.f;
+	virtual void update(void);
 };

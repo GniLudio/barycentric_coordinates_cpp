@@ -9,12 +9,12 @@ namespace UserInterface
 	/**
 	 * Starts an imgui menu that can be used to displaying information.
 	 */
-	void BeginInfoMenu(const Window& window, float uiMargin = 10.0f);
+	void BeginInfoMenu(const Window& window);
 
 	/**
 	 * Starts an imgui m enu that can be used for displaying settings.
 	 */
-	void BeginSettingsMenu(const Window& window, float uiMargin = 10.0f);
+	void BeginSettingsMenu(const Window& window);
 
 	/*+
 	 * Adds an imgui header which can be collapsed.

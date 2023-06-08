@@ -9,7 +9,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFunction imGuiStyle)
+#include "settings.h"
+
+Window::Window(char* title)
 {
 	// sets GLFW error callback
 	glfwSetErrorCallback([](int error, const char* description)
@@ -34,7 +36,7 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	// creates the GLFW window
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
+	window = glfwCreateWindow(Settings::window_width, Settings::window_height, title, NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Couldn't create window. (" << title << ")" << std::endl;
@@ -52,8 +54,7 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 	// sets the OpenGL context
 	glfwMakeContextCurrent(window);
 
-	// sets the swap interval
-	glfwSwapInterval(1);
+	glfwSwapInterval(Settings::enable_vsync);
 
 	// intializes GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -75,10 +76,10 @@ Window::Window(char* title, int width, int height, float fontSize, ImGuiStyleFun
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// Setup ImGui style.
-	imGuiStyle(NULL);
+	Settings::imgui_style(NULL);
 
 	// Load Roboto Font:
-	io.Fonts->AddFontFromFileTTF((CMAKE_SOURCE_DIR "/lib/imgui-1.89.4/misc/fonts/Roboto-Medium.ttf"), fontSize);
+	io.Fonts->AddFontFromFileTTF((CMAKE_SOURCE_DIR "/lib/imgui-1.89.4/misc/fonts/Roboto-Medium.ttf"), Settings::font_size);
 
 	// Window Icon
 	GLFWimage images[1];
@@ -101,21 +102,21 @@ Window::~Window(void)
 	glfwTerminate();
 }
 
-void Window::Start(void)
+void Window::start(void)
 {
 	while (!glfwWindowShouldClose(window))
 	{
-		// Start the Dear ImGui frame
+		// start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
 		// Resets viewport
-		glViewport(0, 0, getWidth(), getHeight());
+		glViewport(0, 0, get_width(), get_height());
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Calls the Update method
-		this->Update();
+		// Calls the update method
+		this->update();
 
 		// Render the GUI and draw it to the screen:
 		ImGui::Render();
@@ -130,19 +131,19 @@ void Window::Start(void)
 
 }
 
-void Window::Update(void)
+void Window::update(void)
 {
 	ImGui::ShowDemoWindow();
 }
 
-int Window::getWidth(void) const
+int Window::get_width(void) const
 {
 	int width;
 	glfwGetFramebufferSize(window, &width, NULL);
 	return width;
 }
 
-int Window::getHeight(void) const
+int Window::get_height(void) const
 {
 	int height;
 	glfwGetFramebufferSize(window, NULL, &height);

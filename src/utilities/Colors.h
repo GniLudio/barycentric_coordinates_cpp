@@ -1,6 +1,9 @@
 #pragma once
 #include "math/Vec4f.h"
 
+/**
+ * \brief Specific colors.
+ */
 namespace Colors {
 	static const Vec4f WHITE = { 1, 1, 1, 1 };
 	static const Vec4f BLACK = { 0, 0, 0, 1};

@@ -2,58 +2,78 @@
 
 #include <vector>
 
+#include "settings.h"
 #include "math/Mat4f.h"
 
+/**
+ * \brief Several utilities.
+ */
 namespace Utilities
 {
 	/**
-	 * Applies rotation and zoom with mouse controls.
-	 *
-	 * @param mouseMovement The movement matrix.
-	 * @param mouseButton The rotation button.
-	 * @param rotationSpeed The rotation speed.
-	 * @param zoomSpeed The zoom speed.
+	 * \brief Updates the rotation with mouse movements.
+	 * \param mouse_rotation_x The x rotation.
+	 * \param mouse_rotation_y The y rotation.
+	 * \param mouse_button The mouse button.
+	 * \return Whether rotation was changed.
 	 */
-	inline bool UpdateMouseRotation(float& mouseRotationX, float& mouseRotationY,
-		ImGuiMouseButton mouseButton, float rotationSpeed = 0.005f)
+	inline bool update_rotation(float& mouse_rotation_x, float& mouse_rotation_y, ImGuiMouseButton mouse_button)
 	{
-		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
+		if (ImGui::IsMouseDown(mouse_button) && !ImGui::GetIO().WantCaptureMouse)
 		{
-			ImVec2 mouseDelta = ImGui::GetIO().MouseDelta;
-			mouseRotationX += mouseDelta.y * rotationSpeed;
-			mouseRotationY += mouseDelta.x * rotationSpeed;
-			return true;
-		}
-		return false;
-	}
-
-	inline bool UpdateMouseZoom(float& mouseZoom, float zoomSpeed = 0.05f)
-	{
-		if (0 != ImGui::GetIO().MouseWheel)
-		{
-			mouseZoom *= 1 + (ImGui::GetIO().MouseWheel < 0 ? -zoomSpeed : zoomSpeed);
+			const ImVec2 mouse_delta = ImGui::GetIO().MouseDelta;
+			mouse_rotation_x += mouse_delta.y * Settings::mouse_rotation_speed;
+			mouse_rotation_y += mouse_delta.x * Settings::mouse_rotation_speed;
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Returns the current mouse position.
+	 * \brief Updates the zoom with the mouse wheel.
+	 * \param mouse_zoom The mouse zoom.
+	 * \return Whether the zoom was changed.
 	 */
-	inline Vec4f GetMousePosition()
+	inline bool update_zoom(float& mouse_zoom)
 	{
-		ImVec2 imMousePos = ImGui::GetIO().MousePos;
-		imMousePos.y = ImGui::GetIO().DisplaySize.y - imMousePos.y;
-		imMousePos.x -= ImGui::GetIO().DisplaySize.x / 2.f;
-		imMousePos.y -= ImGui::GetIO().DisplaySize.y / 2.f;
-
-		return {imMousePos.x, imMousePos.y, 0};
+		if (0 != ImGui::GetIO().MouseWheel)
+		{
+			mouse_zoom *= 1 + (ImGui::GetIO().MouseWheel < 0 ? -Settings::mouse_zoom_speed : Settings::mouse_zoom_speed);
+			return true;
+		}
+		return false;
 	}
 
-	inline int FindNearest(Vec4f* points[], int pointCount, Vec4f pos, int dimensions)
+	/**
+	 * \brief Returns the mouse position. (center = (0,0,0))
+	 * \return The mouse position.
+	 */
+	inline Vec4f get_mouse_position()
 	{
-		int iNearest = pointCount-1;
-		for (int i=pointCount-2; i>=0; i--)
+		ImVec2 im_mouse_pos = ImGui::GetIO().MousePos;
+		// inverts the y axis
+		im_mouse_pos.y = ImGui::GetIO().DisplaySize.y - im_mouse_pos.y;
+		// centers the position
+		im_mouse_pos.x -= ImGui::GetIO().DisplaySize.x / 2.f;
+		im_mouse_pos.y -= ImGui::GetIO().DisplaySize.y / 2.f;
+
+		return {im_mouse_pos.x, im_mouse_pos.y, 0};
+	}
+
+	/**
+	 * \brief Find the nearest point from another point.
+	 * \param points The points.
+	 * \param point_count The point count.
+	 * \param pos The other point.
+	 * \param dimensions The number of dimensions.
+	 * \return The nearest point index.
+	 */
+	inline int find_nearest(Vec4f* points[], int point_count, Vec4f pos, int dimensions)
+	{
+		// takes the last point first
+		// so that the point in the barycentric coordinates demo has priority over the vertices
+		int iNearest = point_count-1;
+		for (int i=point_count-2; i>=0; i--)
 		{
 			if (points[i]->distanceTo(pos, dimensions) < points[iNearest]->distanceTo(pos, dimensions))
 			{
@@ -90,7 +110,7 @@ namespace Utilities
 	{
 		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
 		{
-			Vec4f mousePos = modelMatrix.inverse() * GetMousePosition();
+			Vec4f mousePos = modelMatrix.inverse() * get_mouse_position();
 			mousePos = IntersectPlane(
 				mousePos, 
 				modelMatrix.inverse() * Vec4f(0, 0, 1, 0), 
@@ -99,7 +119,7 @@ namespace Utilities
 			);
 			if (currently_dragging == -1)
 			{
-				currently_dragging = FindNearest(points, pointCount, mousePos, 3);
+				currently_dragging = find_nearest(points, pointCount, mousePos, 3);
 			}
 			*points[currently_dragging] = mousePos;
 			return true;
@@ -107,10 +127,5 @@ namespace Utilities
 		currently_dragging = -1;
 		return false;
 	}
-
-
-
-
-
 
 }
