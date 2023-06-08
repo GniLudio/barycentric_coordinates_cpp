@@ -38,7 +38,7 @@ public:
 	 * Gets the window height;
 	 */
 	int get_height(void) const;
-public:
+protected:
 	/**
 	 * The GLFW window.
 	 */

@@ -54,7 +54,7 @@ public:
 	/** Sets a uniform *int* variable. */
 	void setUniform(char* name, int value) const;
 
-private:
+protected:
 	/** Is set to true in the constructor if initialization worked: */
 	bool initialized = false;
 

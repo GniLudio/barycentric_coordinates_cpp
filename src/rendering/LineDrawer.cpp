@@ -1,7 +1,6 @@
 #include "LineDrawer.h"
 
-LineDrawer::LineDrawer()
-	: shader("line.vert", "line.frag")
+LineDrawer::LineDrawer() : Shader("line.vert", "line.frag")
 {
 	// Generate VAO:
 	glGenVertexArrays(1, &vao);
@@ -12,15 +11,15 @@ LineDrawer::LineDrawer()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	// get the attribute handles
-	GLint positionAttr = glGetAttribLocation(shader.shaderProgram, "position");
-	GLint colorAttr = glGetAttribLocation(shader.shaderProgram, "color");
+	const GLint position_attr = glGetAttribLocation(shaderProgram, "position");
+	const GLint color_attr = glGetAttribLocation(shaderProgram, "color");
 
 	// Link the VBO to the VAO:
 	// Layout: Start Position, Start Color, End Position, End Color
-	glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(Vec4f), 0);
-	glEnableVertexAttribArray(positionAttr);
-	glVertexAttribPointer(colorAttr, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(Vec4f), (void*)sizeof(Vec4f));
-	glEnableVertexAttribArray(colorAttr);
+	glVertexAttribPointer(position_attr, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(Vec4f), 0);
+	glEnableVertexAttribArray(position_attr);
+	glVertexAttribPointer(color_attr, 4, GL_FLOAT, GL_FALSE, 2 * sizeof(Vec4f), (void*)sizeof(Vec4f));
+	glEnableVertexAttribArray(color_attr);
 
 	// Unbind the buffers:
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -29,25 +28,25 @@ LineDrawer::LineDrawer()
 
 LineDrawer::~LineDrawer()
 {
-	// Assume that vao / vbo were generated in every case:
+	if ((*numOfCopies) - 1 > 0) return;
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 }
 
-void LineDrawer::draw(Vec4f startPosition, Vec4f endPosition, Vec4f color, Mat4f modelMatrix) const
+void LineDrawer::draw(Vec4f start_position, Vec4f end_position, Vec4f color, Mat4f model_matrix) const
 {
-	draw(startPosition, endPosition, color, color, modelMatrix);
+	draw(start_position, end_position, color, color, model_matrix);
 }
 
-void LineDrawer::draw(Vec4f startPosition, Vec4f endPosition, Vec4f startColor, Vec4f endColor, Mat4f modelMatrix) const
+void LineDrawer::draw(Vec4f start_position, Vec4f end_position, Vec4f start_color, Vec4f end_color, Mat4f model_matrix) const
 {
-	shader.bind();
+	bind();
 
 	// sets the model matrix
-	shader.setUniform("modelMatrix", modelMatrix);
+	setUniform("model_matrix", model_matrix);
 
 	// uploads the data to the vbo
-	const Vec4f data[4] = { startPosition, startColor, endPosition, endColor };
+	const Vec4f data[4] = { start_position, start_color, end_position, end_color };
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 

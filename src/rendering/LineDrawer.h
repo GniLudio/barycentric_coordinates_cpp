@@ -4,28 +4,51 @@
 #include "math/Mat4f.h"
 #include "math/Vec4f.h"
 
-class LineDrawer
+/**
+ * \brief A line drawer.
+ */
+class LineDrawer : protected Shader
 {
 public:
-	/** The constructor. */
-	LineDrawer();
+	/**
+	 * \brief The constructor.
+	 */
+	explicit LineDrawer(void);
 
-	/** The destructor. */
-	~LineDrawer();
+	/**
+	 * \brief Copy construtor for reference counting.
+	 * \param line_drawer The line drawer.
+	 */
+	LineDrawer(const LineDrawer& line_drawer) = default;
 
-	/** Draws a line with a color. */
-	void draw(Vec4f startPosition, Vec4f endPosition, Vec4f color, Mat4f modelMatrix) const;
+	/**
+	 * \brief The destructor.
+	 */
+	~LineDrawer(void);
 
-	/** Draws a line with a color gradient. */
-	void draw(Vec4f startPosition, Vec4f endPosition, Vec4f startColor, Vec4f endColor, Mat4f modelMatrix) const;
+	/**
+	 * \brief Draws a line.
+	 * \param start_position The start position. 
+	 * \param end_position The end position.
+	 * \param color The line color.
+	 * \param model_matrix The model matrix.
+	 */
+	void draw(Vec4f start_position, Vec4f end_position, Vec4f color, Mat4f model_matrix) const;
 
-private:
+	/**
+	 * \brief Draws a line with a color gradient.
+	 * \param start_position The start position.
+	 * \param end_position The end position.
+	 * \param start_color The start color.
+	 * \param end_color The end color.
+	 * \param model_matrix The model matrix.
+	 */
+	void draw(Vec4f start_position, Vec4f end_position, Vec4f start_color, Vec4f end_color, Mat4f model_matrix) const;
+
+protected:
 	// Pointer to Vertex Array Object (on GPU):
 	GLuint vao = 0;
 
 	// Pointer to vertex buffer:
 	GLuint vbo = 0;
-
-	// Shader to draw the lines:
-	Shader shader;
 };

@@ -12,12 +12,18 @@ public:
 	/**
 	 * \brief The constructor.
 	 */
-	explicit CircleDrawer();
+	explicit CircleDrawer(void);
+
+	/**
+	 * \brief Copy constructor for reference counting.
+	 * \param circle_drawer The circle drawer.
+	 */
+	CircleDrawer(const CircleDrawer& circle_drawer) = default;
 
 	/**
 	 * \brief The destructor.
 	 */
-	~CircleDrawer();
+	~CircleDrawer(void);
 
     /**
      * Draws a circle.
@@ -41,7 +47,7 @@ public:
      * \param edge_thickness The edge thickness. (if not filled)
      */
     void draw(Vec4f position, float radius, Vec4f inner_color, Vec4f outer_color, Mat4f model_matrix, bool filled = true, float edge_thickness = 1.f) const;
-private:
+protected:
     // Pointer to Vertex Array Object (on GPU):
     GLuint vao = 0;
 

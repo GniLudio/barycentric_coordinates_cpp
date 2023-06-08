@@ -26,7 +26,8 @@ CircleDrawer::CircleDrawer()
 
 CircleDrawer::~CircleDrawer()
 {
-    // Assume that vao / vbo were generated in every case:
+    if ((*numOfCopies) - 1 > 0) return;
+
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
 }
