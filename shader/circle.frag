@@ -1,10 +1,11 @@
 #version 330
 
 // The uniform variables
-uniform vec4 circle_color;
-uniform bool circle_filled;
-uniform float circle_radius;
-uniform float circle_edge_thickness;
+uniform float radius;
+uniform vec4 inner_color;
+uniform vec4 outer_color;
+uniform bool filled;
+uniform float edge_thickness;
 
 // The input variables
 in vec4 vertex_offset;
@@ -16,12 +17,14 @@ void main()
 {
 	// calculates the distance from the center
 	float d = length(vertex_offset);
+	vec4 color = mix(inner_color, outer_color, d / radius);
 	// on the edge
-	if ((d / circle_radius) <= 1 && (circle_radius - d) < circle_edge_thickness)
-		fragment_color = circle_color;
+	if ((d / radius) <= 1 && (radius - d) < edge_thickness)
+		fragment_color = color;
 	// inside
-	else if ((d / circle_radius) <= 1 && circle_filled)
-		fragment_color = circle_color;
+	else if ((d / radius) <= 1 && filled)
+		fragment_color = color;
+	// outside
 	else
 		fragment_color = vec4(0,0,0,0);
 }

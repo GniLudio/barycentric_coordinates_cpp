@@ -33,15 +33,23 @@ CircleDrawer::~CircleDrawer()
 
 void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, bool filled, float edgeThickness) const
 {
+    draw(position, radius, color, color, modelMatrix, filled, edgeThickness);
+
+}
+
+void CircleDrawer::draw(Vec4f position, float radius, Vec4f inner_color, Vec4f outer_color, Mat4f model_matrix,
+	bool filled, float edge_thickness) const
+{
     shader.bind();
 
     // set the uniforms
-    shader.setUniform("model_matrix", modelMatrix);
-    shader.setUniform("circle_position", position, 4);
-    shader.setUniform("circle_radius", radius);
-    shader.setUniform("circle_color", color);
-    shader.setUniform("circle_filled", filled);
-    shader.setUniform("circle_edge_thickness", edgeThickness);
+    shader.setUniform("model_matrix", model_matrix);
+    shader.setUniform("position", position, 4);
+    shader.setUniform("radius", radius);
+    shader.setUniform("inner_color", inner_color);
+    shader.setUniform("outer_color", outer_color);
+    shader.setUniform("filled", filled);
+    shader.setUniform("edge_thickness", edge_thickness);
 
     // upload the data
     const Vec4f data[6] = {
@@ -65,5 +73,4 @@ void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMa
 
     // disable blending
     glDisable(GL_BLEND);
-
 }
