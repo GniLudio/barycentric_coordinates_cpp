@@ -25,4 +25,4 @@ The executable can be found at '*output-path/debug/Computergraphik.exe*'.
 | Key 'I' | Toggles whether the point can only be inside the triangle. |
 
 ## Quellen
-* [A. F. Möbius](https://www.portraitindex.de/documents/obj/33213645)
+* Icon: [A. F. Möbius](https://www.portraitindex.de/documents/obj/33213645)
