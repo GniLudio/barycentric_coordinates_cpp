@@ -43,10 +43,4 @@ namespace Settings
 	static const float isoline_start = 0.f;
 	static const float isoline_end = 1.f;
 	static const float isoline_interval = 1.f;
-
-
-
-
-
-
 }

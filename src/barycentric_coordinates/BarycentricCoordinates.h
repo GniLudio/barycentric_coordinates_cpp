@@ -229,6 +229,8 @@ private:
 		}
 		if (ImGui::IsKeyPressed(ImGuiKey_R, false))
 			reset();
+		if (ImGui::IsKeyPressed(ImGuiKey_N, false))
+			display_vertex_names = !display_vertex_names;
 	}
 
 	/**
@@ -243,7 +245,7 @@ private:
 		if (UserInterface::add_collapsing_header("Triangle"))
 		{
 			ImGui::Indent();
-			ImGui::Checkbox("Show Names", &display_vertex_names);
+			ImGui::Checkbox("Show Names (N)", &display_vertex_names);
 			if (UserInterface::drag_vec(&triangle[0].position.x, "A", 2))
 				update_point(0);
 			if (UserInterface::drag_vec(&triangle[1].position.x, "B", 2))
@@ -258,14 +260,8 @@ private:
 			ImGui::Indent();
 			if (ImGui::Checkbox("Only Inside (I)", &only_inside))
 				update_barycentric_coordinates();
-			UserInterface::add_tooltip("Keyboard Shortcut: 'I'");
 			for (int i = 0; i < 3; i++)
 			{
-				if (isolines_enabled)
-				{
-					Vec4f color = Colors::WHITE * 0.8f + barycentric_colors[i].toVector() * 0.2f;
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.x, color.y, color.z, color.w));
-				}
 				if (only_inside)
 				{
 					if (ImGui::DragFloat(barycentric_labels[i], &barycentric[i], 0.01f, 0.f, 1.f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
@@ -275,8 +271,6 @@ private:
 					if (ImGui::DragFloat(barycentric_labels[i], &barycentric[i], 0.01f))
 						update_point(i);
 				}
-				if (isolines_enabled)
-					ImGui::PopStyleColor();
 			}
 			if (UserInterface::drag_vec(&point[0], "Point", 2))
 				update_barycentric_coordinates();
@@ -287,7 +281,6 @@ private:
 		{
 			ImGui::Indent();
 			ImGui::Checkbox("Show Isolines (L)", &isolines_enabled);
-			UserInterface::add_tooltip("Keyboard Shortcut: 'L'");
 			ImGui::DragFloat("Start", &isolines_start, 0.1f, 0, 0,"%.1f");
 			ImGui::DragFloat("End", &isolines_end, 0.1f, 0, 0,"%.1f");
 			ImGui::DragFloat("Interval", &isolines_interval, 0.01f, 0, 999.99f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
@@ -297,7 +290,6 @@ private:
 		ImGui::Spacing();
 		if (ImGui::Button("Reset All (R)")) 
 			reset();
-		UserInterface::add_tooltip("Keyboard Shortcut: 'R'");
 		ImGui::PopItemWidth();
 		ImGui::End();
 

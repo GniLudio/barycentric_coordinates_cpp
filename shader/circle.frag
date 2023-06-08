@@ -17,14 +17,15 @@ void main()
 {
 	// calculates the distance from the center
 	float d = length(vertex_offset);
+	// mixes the inner and outer color depending on the distance
 	vec4 color = mix(inner_color, outer_color, d / radius);
-	// on the edge
-	if ((d / radius) <= 1 && (radius - d) < edge_thickness)
-		fragment_color = color;
 	// inside
-	else if ((d / radius) <= 1 && filled)
+	if ((d / radius) <= 1 && filled)
 		fragment_color = color;
-	// outside
+	// on the edge
+	else if ((d / radius) <= 1 && (radius - d) < edge_thickness)
+		fragment_color = color;
+	// otherwise
 	else
 		fragment_color = vec4(0,0,0,0);
 }

@@ -21,6 +21,7 @@ The executable can be found at '*output-path/debug/Computergraphik.exe*'.
 | Shift + Left Mouse | Changes the rotation. |
 | Key 'S' | Toggles the settings menu. |
 | Key 'L' | Toggles the isolines. |
+| Key 'N' | Toggles the vertex names. |
 | Key 'I' | Toggles whether the point can only be inside the triangle. |
 
 ## Quellen

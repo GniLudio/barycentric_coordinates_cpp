@@ -24,7 +24,6 @@ void UserInterface::begin_settings_menu(const Window& window)
 		ImGuiWindowFlags_AlwaysAutoResize
 	);
 	ImGui::PushItemWidth(Settings::menu_width);
-	add_tooltip("Keyboard Shortcut: 'S'");
 	if (ImGui::IsKeyPressed(ImGuiKey_S, false))
 		ImGui::SetWindowCollapsed(!ImGui::IsWindowCollapsed());
 }
