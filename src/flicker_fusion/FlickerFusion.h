@@ -3,6 +3,7 @@
 // Window class
 #include "window/Window.h"
 
+// Settings
 #include "settings.h"
 
 class FlickerFusion : public Window
@@ -55,9 +56,9 @@ private:
 	 */
 	void Reset(void)
 	{
-		flicker_interval = 1.f;
-		flicker_brightness = 0.5f;
-		gradient_height = -0.5f;
+		flicker_interval = Settings::flicker_interval;
+		flicker_brightness = Settings::flicker_brightness;
+		gradient_height = Settings::gradient_height;
 		last_start_time = glfwGetTime();
 	}
 private:

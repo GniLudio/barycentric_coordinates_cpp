@@ -43,4 +43,9 @@ namespace Settings
 	static const float isoline_start = 0.f;
 	static const float isoline_end = 1.f;
 	static const float isoline_interval = 1.f;
+
+	// Flicker Fusion
+	static const float flicker_interval = 1.f;
+	static const float flicker_brightness = 1.f;
+	static const float gradient_height = -0.5f;
 }

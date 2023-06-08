@@ -8,7 +8,7 @@ Several settings can be found in *src/settings.h*.
 
 ## Build
 
-To build the executable use the following commands:
+The executable can be build with the following commands:
 1. `cmake -S . -B output-path`
 2. `cmake --build output-path`
 
