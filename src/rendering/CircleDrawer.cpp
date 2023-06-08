@@ -2,7 +2,7 @@
 #include "CircleDrawer.h"
 
 CircleDrawer::CircleDrawer()
-	: shader("circle.vert", "circle.frag")
+	: Shader("circle.vert", "circle.frag")
 {
     // Generate VAO:
     glGenVertexArrays(1, &vao);
@@ -13,11 +13,11 @@ CircleDrawer::CircleDrawer()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     // get the attribute handles
-    GLint offsetAttr = glGetAttribLocation(shader.shaderProgram, "offset");
+    const GLint offset_attr = glGetAttribLocation(shaderProgram, "offset");
 
     // Link the VBO to the VAO:
-    glVertexAttribPointer(offsetAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
-    glEnableVertexAttribArray(offsetAttr);
+    glVertexAttribPointer(offset_attr, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4f), 0);
+    glEnableVertexAttribArray(offset_attr);
 
     // Unbind the buffers:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -31,25 +31,25 @@ CircleDrawer::~CircleDrawer()
     glDeleteBuffers(1, &vbo);
 }
 
-void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, bool filled, float edgeThickness) const
+void CircleDrawer::draw(Vec4f position, float radius, Vec4f color, Mat4f model_matrix, bool filled, float edge_thickness) const
 {
-    draw(position, radius, color, color, modelMatrix, filled, edgeThickness);
+    draw(position, radius, color, color, model_matrix, filled, edge_thickness);
 
 }
 
 void CircleDrawer::draw(Vec4f position, float radius, Vec4f inner_color, Vec4f outer_color, Mat4f model_matrix,
 	bool filled, float edge_thickness) const
 {
-    shader.bind();
+    bind();
 
     // set the uniforms
-    shader.setUniform("model_matrix", model_matrix);
-    shader.setUniform("position", position, 4);
-    shader.setUniform("radius", radius);
-    shader.setUniform("inner_color", inner_color);
-    shader.setUniform("outer_color", outer_color);
-    shader.setUniform("filled", filled);
-    shader.setUniform("edge_thickness", edge_thickness);
+    setUniform("model_matrix", model_matrix);
+    setUniform("position", position, 4);
+    setUniform("radius", radius);
+    setUniform("inner_color", inner_color);
+    setUniform("outer_color", outer_color);
+    setUniform("filled", filled);
+    setUniform("edge_thickness", edge_thickness);
 
     // upload the data
     const Vec4f data[6] = {

@@ -3,25 +3,32 @@
 #include "glad/glad.h"
 #include "math/Vec4f.h"
 
-class CircleDrawer
+/**
+ * \brief A circle drawer.
+ */
+class CircleDrawer : protected Shader
 {
 public:
-    /** The constructor. */
-    CircleDrawer();
+	/**
+	 * \brief The constructor.
+	 */
+	explicit CircleDrawer();
 
-    /** The destructor. */
-    ~CircleDrawer();
+	/**
+	 * \brief The destructor.
+	 */
+	~CircleDrawer();
 
     /**
      * Draws a circle.
      * @param position The center position.
      * @param radius The radius.
      * @param color The color.
-     * @param modelMatrix The model matrix.
+     * @param model_matrix The model matrix.
      * @param filled Whether the circle is filled.
-     * @param edgeThickness The edge thickness for non-filled circles.
+     * @param edge_thickness The edge thickness for non-filled circles.
      */
-    void draw(Vec4f position, float radius, Vec4f color, Mat4f modelMatrix, bool filled = true, float edgeThickness = 1) const;
+    void draw(Vec4f position, float radius, Vec4f color, Mat4f model_matrix, bool filled = true, float edge_thickness = 1) const;
 
     /**
      * \brief Draws a circle.
@@ -40,7 +47,4 @@ private:
 
     // Pointer to vertex buffer:
     GLuint vbo = 0;
-
-    // Shader to draw the lines:
-    Shader shader;
 };
