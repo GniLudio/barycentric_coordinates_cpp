@@ -2,7 +2,7 @@
 #include "math/Vec4f.h"
 
 /**
- * \brief Specific colors.
+ * \brief A color palette.
  */
 namespace Colors {
 	static const Vec4f WHITE = { 1, 1, 1, 1 };

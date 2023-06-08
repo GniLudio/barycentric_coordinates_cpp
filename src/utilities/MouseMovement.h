@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "settings.h"
 #include "math/Mat4f.h"
 
@@ -91,9 +89,9 @@ namespace Utilities
 	 * \param c A point on the plane.
 	 * \return The projected point.
 	 */
-	inline Vec4f IntersectPlane(Vec4f p0, Vec4f d, Vec4f n, Vec4f c)
+	inline Vec4f project_onto_plane(Vec4f p0, Vec4f d, Vec4f n, Vec4f c)
 	{
-		float t = (n.dot(c.toVector()) - n.dot(p0.toVector())) / (n.dot(d));
+		const float t = (n.dot(c.toVector()) - n.dot(p0.toVector())) / n.dot(d);
 		return p0 + d * t;
 	}
 
@@ -106,12 +104,12 @@ namespace Utilities
 	 * @param mouseButton The mouse button.
 	 * @param currently_dragging Which point is being dragged.
 	 */
-	inline bool MoveWithMouse(Vec4f* points[], int pointCount, Mat4f modelMatrix, ImGuiMouseButton mouseButton, int& currently_dragging)
+	inline bool move_with_mouse(Vec4f* points[], int pointCount, Mat4f modelMatrix, ImGuiMouseButton mouseButton, int& currently_dragging)
 	{
 		if (ImGui::IsMouseDown(mouseButton) && !ImGui::GetIO().WantCaptureMouse)
 		{
 			Vec4f mousePos = modelMatrix.inverse() * get_mouse_position();
-			mousePos = IntersectPlane(
+			mousePos = project_onto_plane(
 				mousePos, 
 				modelMatrix.inverse() * Vec4f(0, 0, 1, 0), 
 				Vec4f(0, 0, -1, 0), 

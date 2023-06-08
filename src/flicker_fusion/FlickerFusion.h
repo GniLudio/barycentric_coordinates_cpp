@@ -22,8 +22,6 @@ protected:
 	 */
 	void update() override
 	{
-		const Vec4f bg_color = Settings::background_color;
-		glClearColor(bg_color.x, bg_color.y, bg_color.z, bg_color.w);
 		this->handle_inputs();
 		this->update_ui();
 		this->draw();
@@ -76,14 +74,14 @@ private:
 	void update_ui(void)
 	{
 		// settings menu
-		UserInterface::BeginSettingsMenu(*this);
-		if (UserInterface::AddCollapsingHeader("Flicker Fusion"))
+		UserInterface::begin_settings_menu(*this);
+		if (UserInterface::add_collapsing_header("Flicker Fusion"))
 		{
 			if (ImGui::DragFloat("Interval", &flicker_interval, 0.01f, 0.f, 3.f))
 				last_start_time = glfwGetTime();
 			ImGui::DragFloat("Brightness", &flicker_brightness, 0.01f, 0.f, 1.f);
 		}
-		if (UserInterface::AddCollapsingHeader("Brightness Gradient"))
+		if (UserInterface::add_collapsing_header("Brightness Gradient"))
 		{
 			ImGui::Indent();
 			ImGui::Checkbox("Show Gradient", &gradient_enable);

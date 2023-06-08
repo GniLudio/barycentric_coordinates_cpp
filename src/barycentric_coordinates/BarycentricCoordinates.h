@@ -35,8 +35,7 @@ protected:
 	 */
 	void update(void) override
 	{
-		const Vec4f bg_color = Settings::background_color;
-		glClearColor(bg_color.x, bg_color.y, bg_color.z, bg_color.w);
+		
 		this->handle_inputs();
 		this->update_ui();
 		this->draw();
@@ -200,7 +199,7 @@ private:
 		else
 		{
 			Vec4f* points[4] = { &triangle[0].position, &triangle[1].position, &triangle[2].position, &point };
-			if (Utilities::MoveWithMouse(points, 4, mouse_movement, ImGuiMouseButton_Left, currently_dragging))
+			if (Utilities::move_with_mouse(points, 4, mouse_movement, ImGuiMouseButton_Left, currently_dragging))
 			{
 				switch (currently_dragging)
 				{
@@ -240,26 +239,26 @@ private:
 		const Mat4f mouse_movement = get_mouse_movement_matrix();
 
 		// settings menu
-		UserInterface::BeginSettingsMenu(*this);
-		if (UserInterface::AddCollapsingHeader("Triangle"))
+		UserInterface::begin_settings_menu(*this);
+		if (UserInterface::add_collapsing_header("Triangle"))
 		{
 			ImGui::Indent();
 			ImGui::Checkbox("Show Names", &display_vertex_names);
-			if (UserInterface::DragVec(&triangle[0].position.x, "A", 2))
+			if (UserInterface::drag_vec(&triangle[0].position.x, "A", 2))
 				update_point(0);
-			if (UserInterface::DragVec(&triangle[1].position.x, "B", 2))
+			if (UserInterface::drag_vec(&triangle[1].position.x, "B", 2))
 				update_point(1);
-			if (UserInterface::DragVec(&triangle[2].position.x, "B", 2))
+			if (UserInterface::drag_vec(&triangle[2].position.x, "B", 2))
 				update_point(2);
 			ImGui::Unindent();
 		}
 		ImGui::Spacing();
-		if (UserInterface::AddCollapsingHeader("Barycentric Coordinates"))
+		if (UserInterface::add_collapsing_header("Barycentric Coordinates"))
 		{
 			ImGui::Indent();
 			if (ImGui::Checkbox("Only Inside (I)", &only_inside))
 				update_barycentric_coordinates();
-			UserInterface::AddTooltip("Keyboard Shortcut: 'I'");
+			UserInterface::add_tooltip("Keyboard Shortcut: 'I'");
 			for (int i = 0; i < 3; i++)
 			{
 				if (isolines_enabled)
@@ -279,31 +278,31 @@ private:
 				if (isolines_enabled)
 					ImGui::PopStyleColor();
 			}
-			if (UserInterface::DragVec(&point[0], "Point", 2))
+			if (UserInterface::drag_vec(&point[0], "Point", 2))
 				update_barycentric_coordinates();
 			ImGui::Unindent();
 		}
 		ImGui::Spacing();
-		if (UserInterface::AddCollapsingHeader("Isolines"))
+		if (UserInterface::add_collapsing_header("Isolines"))
 		{
 			ImGui::Indent();
 			ImGui::Checkbox("Show Isolines (L)", &isolines_enabled);
-			UserInterface::AddTooltip("Keyboard Shortcut: 'L'");
+			UserInterface::add_tooltip("Keyboard Shortcut: 'L'");
 			ImGui::DragFloat("Start", &isolines_start, 0.1f, 0, 0,"%.1f");
 			ImGui::DragFloat("End", &isolines_end, 0.1f, 0, 0,"%.1f");
 			ImGui::DragFloat("Interval", &isolines_interval, 0.01f, 0, 999.99f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
-			UserInterface::AddTooltip("The isolines are not displayed for values between -0.01 and 0.01.");
+			UserInterface::add_tooltip("The isolines are not displayed for values between -0.01 and 0.01.");
 			ImGui::Unindent();
 		}
 		ImGui::Spacing();
 		if (ImGui::Button("Reset All (R)")) 
 			reset();
-		UserInterface::AddTooltip("Keyboard Shortcut: 'R'");
+		UserInterface::add_tooltip("Keyboard Shortcut: 'R'");
 		ImGui::PopItemWidth();
 		ImGui::End();
 
 		// info menu
-		UserInterface::BeginInfoMenu(*this);
+		UserInterface::begin_info_menu(*this);
 		ImGui::BeginDisabled();
 		// numbers near 0 and 1 are displays as 0 and 1
 		Vec4f prettyBarycentric = Vec4f(barycentric[0], barycentric[1], barycentric[2]);
@@ -314,7 +313,7 @@ private:
 			if (std::abs(prettyBarycentric[i]) < COMPARE_DELTA) 
 				prettyBarycentric[i] = 0.f;
 		}
-		UserInterface::DragVec(&prettyBarycentric[0], "##Barycentric");
+		UserInterface::drag_vec(&prettyBarycentric[0], "##Barycentric");
 		ImGui::EndDisabled();
 		ImGui::End();
 	}
@@ -381,9 +380,9 @@ private:
 		circle_drawer.draw(point, point_size, point_color,model_matrix);
 		if (display_vertex_names)
 		{
-			UserInterface::AddText("A", triangle[0].position, mouse_movement, *this);
-			UserInterface::AddText("B", triangle[1].position, mouse_movement, *this);
-			UserInterface::AddText("C", triangle[2].position, mouse_movement, *this);
+			UserInterface::add_text("A", triangle[0].position, mouse_movement, *this);
+			UserInterface::add_text("B", triangle[1].position, mouse_movement, *this);
+			UserInterface::add_text("C", triangle[2].position, mouse_movement, *this);
 		}
 
 	}

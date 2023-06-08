@@ -1,8 +1,5 @@
 #pragma once
 
-// Include ImGui
-#include <imgui.h>
-
 // Include glad
 // must be included before glfw3
 #include <glad/glad.h>
@@ -10,43 +7,47 @@
 // Include GLFW/OpenGL:
 #include <GLFW/glfw3.h>
 
+/**
+ * \brief A window.
+ */
 class Window
 {
 public:
 	/**
-	 * The constructor.
-	 * @param title The window title.
+	 * \brief The constructor.
+	 * \param title The title.
 	 */
-	Window(char* title);
+	explicit Window(const char* title);
 
 	/**
-	 * The destructor.
+	 * \brief The destructor.
 	 */
-	virtual ~Window(void);
+	~Window(void);
 
 	/**
-	 * Starts rendering.
+	 * \brief Starts rendering.
 	 */
 	void start(void);
 
 	/**
-	 * Gets the window width;
+	 * \brief Returns the window width.
+	 * \return The window width.
 	 */
 	int get_width(void) const;
 
 	/**
-	 * Gets the window height;
+	 * \brief Returns the window height.
+	 * \return The window height.
 	 */
 	int get_height(void) const;
 protected:
 	/**
-	 * The GLFW window.
+	 * \brief The glfw window.
 	 */
 	GLFWwindow* window;
 
 	/**
-	 * The update function.
-	 * Calls once every frame.
+	 * \brief The update method. (Called each frame)
 	 */
 	virtual void update(void);
 };
