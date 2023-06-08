@@ -15,12 +15,6 @@ public:
 	explicit CircleDrawer(void);
 
 	/**
-	 * \brief Copy constructor for reference counting.
-	 * \param circle_drawer The circle drawer.
-	 */
-	CircleDrawer(const CircleDrawer& circle_drawer) = default;
-
-	/**
 	 * \brief The destructor.
 	 */
 	~CircleDrawer(void);

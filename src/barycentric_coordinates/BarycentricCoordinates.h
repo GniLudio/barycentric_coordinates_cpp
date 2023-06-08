@@ -329,9 +329,14 @@ private:
 	{
 		Vec4f temp = modelMatrix * direction;
 
-		Vec4f result = direction;
+		float scalar = 1.f;
+		if (temp.x != 0.f) 
+			scalar = std::max(std::abs(get_width() / temp.x), scalar);
+		if (temp.y != 0.f) 
+			scalar = std::max(std::abs(get_height() / temp.y), scalar);
+
+		Vec4f result = direction * scalar;
 		result.z = 0;
-		result = result * (get_width() / temp.x) * (get_height() / temp.y);
 
 		return result;
 	}

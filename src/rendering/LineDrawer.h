@@ -16,12 +16,6 @@ public:
 	explicit LineDrawer(void);
 
 	/**
-	 * \brief Copy construtor for reference counting.
-	 * \param line_drawer The line drawer.
-	 */
-	LineDrawer(const LineDrawer& line_drawer) = default;
-
-	/**
 	 * \brief The destructor.
 	 */
 	~LineDrawer(void);

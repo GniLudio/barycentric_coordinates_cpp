@@ -7,19 +7,21 @@ A demonstration of barycentric coordinates.
 Several settings can be found in *src/settings.h*.
 
 ## Build
-2. `cmake -S . -B output-path`
-3. `cmake --build output-path`
 
-The executable can be found at *output-path/debug/Computergraphik.exe*
+To build the executable use the following commands:
+1. `cmake -S . -B output-path`
+2. `cmake --build output-path`
+
+The executable can be found at '*output-path/debug/Computergraphik.exe*'.
 
 ## Controls
 | Input | Description |
 |---|---|
 | Left Mouse | Moves the nearest point. |
-| Shift + Left Mouse | Rotates the image. |
+| Shift + Left Mouse | Changes the rotation. |
 | Key 'S' | Toggles the settings menu. |
 | Key 'L' | Toggles the isolines. |
-| Key 'I' | Toggles whether the point can be outside the triangle. |
+| Key 'I' | Toggles whether the point can only be inside the triangle. |
 
 ## Quellen
-* [Bildnis des A. F. Möbius](https://www.portraitindex.de/documents/obj/33213645)
+* [A. F. Möbius](https://www.portraitindex.de/documents/obj/33213645)

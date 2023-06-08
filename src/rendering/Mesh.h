@@ -12,49 +12,66 @@
 // Include Triangle primitive
 #include "primitives/Triangle.h"
 
-
-class Mesh
+/**
+ * \brief A mesh.
+ */
+class Mesh : protected Shader
 {
 public:
-	/** Creates an empty mesh. */
-	Mesh();
+	/**
+	 * \brief The constructor for a empty mesh.
+	 */
+	explicit Mesh();
 
-	/** Creates a mesh out of the triangles. */
-	Mesh(const std::vector<Triangle>& triangles);
+	/**
+	 * \brief The constructor.
+	 * \param triangles The triangles.
+	 */
+	explicit Mesh(const std::vector<Triangle>& triangles);
 
-	/** Creates a mesh with the geometry data of an .obj file. */
-	Mesh(char* fileName, char* sourceDir = CMAKE_SOURCE_DIR "/models/");
+	/**
+	 * \brief The constructor.
+	 * \param file_name The .obj file name.
+	 * \param source_dir The directory of the .obj file.
+	 */
+	explicit Mesh(const char* file_name, const char* source_dir = CMAKE_SOURCE_DIR "/models/");
 
-	/** Explicit copy constructor for reference counting. */
-	Mesh(const Mesh& mesh);
-
-	/** Destructor. */
+	/**
+	 * \brief The destructor.
+	 */
 	~Mesh();
 
-	/** Renders the mesh. */
-	void render(Mat4f modelMatrix) const;
+	/**
+	 * \brief Renders the mesh.
+	 * \param model_matrix The model matrix.
+	 */
+	void render(Mat4f model_matrix) const;
 
-	/** Uploads the triangle data. */
+	/**
+	 * \brief Uploads the data.
+	 * \param triangles The triangles.
+	 */
 	void uploadData(const std::vector<Triangle>& triangles);
 
-	/** Uploads the geometry data of an obj. file. */
-	void uploadData(char* fileName, char* sourceDir = CMAKE_SOURCE_DIR "/models/");
-private:
-	const Shader shader;
+	/**
+	 * \brief Uploads the data.
+	 * \param file_name The .obj file name.
+	 * \param source_dir The directory of the .obj file.
+	 */
+	void uploadData(const char* file_name, const char* source_dir = CMAKE_SOURCE_DIR "/models/");
+protected:
+	/**
+	 * \brief The vertex array object.
+	 */
+	GLuint vao;
 
-	// The VAO and VBO
-	GLuint vao, vbo;
+	/**
+	 * \brief The vertex buffer object.
+	 */
+	GLuint vbo;
 
-	// Number of vertices
-	unsigned int verticesNum;
-
-	// Copy counter (This is needed for correct creation and deletion
-	// of VAO/VBOs, since C++ copies objects on reassignment, see copy
-	// constructor. In general, I would recommend holding Mesh, Shader,
-	// SpinningTop and World objects by a shared_ptr instead of doing
-	// this, because that ensures that exactly one explicitly created
-	// mesh object exists, but we don't want to introduce 'Smart Pointers'
-	// in Computergrafik 1 - just as a hint if you want to create your
-	// own engine):
-	int* numOfCopies;
+	/**
+	 * \brief The number of vertices
+	 */
+	unsigned int vertices_num;
 };

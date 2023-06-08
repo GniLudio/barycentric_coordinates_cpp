@@ -1,4 +1,3 @@
-
 #include "CircleDrawer.h"
 
 CircleDrawer::CircleDrawer()

@@ -12,7 +12,7 @@
 #include "tiny_obj_loader.h"
 
 Mesh::Mesh()
-	: shader("simple.vert", "simple.frag"), verticesNum(0), numOfCopies(new int())
+	: Shader("simple.vert", "simple.frag"), vertices_num(0)
 {
 	// creates the vao
 	glGenVertexArrays(1, &vao);
@@ -23,15 +23,15 @@ Mesh::Mesh()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	// gets the attribute handles
-	GLuint positionAttr = glGetAttribLocation(shader.shaderProgram, "position");
-	GLuint colorAttr = glGetAttribLocation(shader.shaderProgram, "color");
+	const GLuint position_attr = glGetAttribLocation(shaderProgram, "position");
+	const GLuint color_attr = glGetAttribLocation(shaderProgram, "color");
 
 	// Sets the layout
 	// Layout (per Triangle): Position A, Color A, Position B, Color B, Position C, Color C
-	glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-	glEnableVertexAttribArray(positionAttr);
-	glVertexAttribPointer(colorAttr, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-	glEnableVertexAttribArray(colorAttr);
+	glVertexAttribPointer(position_attr, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+	glEnableVertexAttribArray(position_attr);
+	glVertexAttribPointer(color_attr, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+	glEnableVertexAttribArray(color_attr);
 
 	// Unbind the buffers
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -43,37 +43,28 @@ Mesh::Mesh(const std::vector<Triangle>& triangles) : Mesh()
 	uploadData(triangles);
 }
 
-Mesh::Mesh(char* fileName, char* sourceDir) : Mesh()
+Mesh::Mesh(const char* file_name, const char* source_dir) : Mesh()
 {
-	uploadData(fileName, sourceDir);
-}
-
-Mesh::Mesh(const Mesh& mesh)
-	: shader(mesh.shader), vao(mesh.vao), vbo(mesh.vbo), verticesNum(mesh.verticesNum), numOfCopies(mesh.numOfCopies)
-{
-	++(*numOfCopies);
+	uploadData(file_name, source_dir);
 }
 
 Mesh::~Mesh()
 {
-	--(*numOfCopies);
-	if (*numOfCopies > 0) return;
+	if ((*numOfCopies)-1 > 0) return;
 
 	if (vao != 0)
 		glDeleteVertexArrays(1, &vao);
 	if (vbo != 0)
 		glDeleteBuffers(1, &vbo);
-
-	delete numOfCopies;
 }
 
-void Mesh::render(Mat4f modelMatrix) const
+void Mesh::render(Mat4f model_matrix) const
 {
-	shader.bind();
-	shader.setUniform("modelMatrix", modelMatrix);
+	bind();
+	setUniform("model_matrix", model_matrix);
 
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, verticesNum);
+	glDrawArrays(GL_TRIANGLES, 0, vertices_num);
 }
 
 void Mesh::uploadData(const std::vector<Triangle>& triangles)
@@ -82,16 +73,16 @@ void Mesh::uploadData(const std::vector<Triangle>& triangles)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	// uploads the triangles
-	verticesNum = static_cast<unsigned int>(3 * triangles.size());
-	glBufferData(GL_ARRAY_BUFFER, verticesNum * sizeof(Vertex), &triangles.front(), GL_STATIC_DRAW);
+	vertices_num = static_cast<unsigned int>(3 * triangles.size());
+	glBufferData(GL_ARRAY_BUFFER, vertices_num * sizeof(Vertex), &triangles.front(), GL_STATIC_DRAW);
 
 	// Unbind the buffers
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Mesh::uploadData(char* fileName, char* sourceDir)
+void Mesh::uploadData(const char* file_name, const char* source_dir)
 {
-	std::string filePath = std::string() + sourceDir + fileName;
+	std::string filePath = std::string() + source_dir + file_name;
 	std::cout << "File Path " << filePath << std::endl;
 
 	std::vector<Triangle> triangles;
