@@ -87,10 +87,15 @@ Window::Window(const char* title)
 
 	// Window Icon
 	GLFWimage icon;
-	icon.pixels = stbi_load(CMAKE_SOURCE_DIR "/images/icon.png", &icon.width, &icon.height, NULL, 4); //rgba channels 
-	glfwSetWindowIcon(window, 1, &icon);
-	stbi_image_free(icon.pixels);
-
+	icon.pixels = stbi_load(CMAKE_SOURCE_DIR "/" "images/icon.png", &icon.width, &icon.height, NULL, 4); //rgba channels 
+	if (icon.pixels != NULL)
+	{
+		glfwSetWindowIcon(window, 1, &icon);
+		stbi_image_free(icon.pixels);
+	} else
+	{
+		std::cerr << "Icon couldn't be found." << std::endl;
+	}
 }
 
 Window::~Window(void)
