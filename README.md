@@ -13,7 +13,7 @@ Several settings can be found in *src/settings.h*.
      `cmake -S . -B output-path -G "Visual Studio 17 2022"`
 3. `cmake --build output-path`
 
-Outputs the executable at '*output-path/Debug/Computergraphik.exe*'.
+Outputs the executable at `output-path/Debug/Computergraphik.exe`.
 
 ## Controls
 | Input | Description |
