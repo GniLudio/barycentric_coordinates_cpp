@@ -9,10 +9,9 @@ Several settings can be found in *src/settings.h*.
 
 ## Build
 1. `cmake -S . -B output-path`
-2. `cmake --build output-path`
-
-Requires an C++ compiler, which can be set with `-G`:
-* `cmake -S . -B output-path -G "Visual Studio 17 2022"`
+   * Requires an C++ compiler, which can be set with `-G`:<br>
+     `cmake -S . -B output-path -G "Visual Studio 17 2022"`
+3. `cmake --build output-path`
 
 The executable can be found at '*output-path/Debug/Computergraphik.exe*'.
 
