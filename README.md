@@ -3,7 +3,6 @@
 A demonstration of barycentric coordinates.
 ![image](https://github.com/GniLudio/barycentric_coordinates/assets/50866361/69d16413-c926-4849-b9e6-aafe061d6ae1)
 
-
 ## Settings
 Several settings can be found in *src/settings.h*.
 
@@ -25,5 +24,5 @@ Outputs the executable at `output-path/Debug/Computergraphik.exe`.
 | Key 'N' | Toggles the vertex names. |
 | Key 'I' | Toggles whether the point can only be inside the triangle. |
 
-## Quellen
+## Sources
 * Icon: [A. F. Möbius](https://www.portraitindex.de/documents/obj/33213645)
